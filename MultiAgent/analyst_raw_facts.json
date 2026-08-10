@@ -1,0 +1,101 @@
+{
+  "topic": "The architectural evolution of AI Transformers (2017-2024)",
+  "facts": [
+    {
+      "claim": "The Transformer architecture was introduced in 2017 by Vaswani et al. in the paper 'Attention is All You Need', which eliminated recurrence and relied entirely on self-attention mechanisms to compute representations.",
+      "citation": {
+        "source": "Vaswani et al., Google Brain and Google Research",
+        "year": 2017,
+        "url": "https://arxiv.org/abs/1706.03762"
+      }
+    },
+    {
+      "claim": "BERT (Bidirectional Encoder Representations from Transformers) was introduced by Google in 2018, using only the encoder part of the Transformer architecture and introducing bidirectional pre-training for language understanding tasks.",
+      "citation": {
+        "source": "Devlin et al., Google AI Language",
+        "year": 2018,
+        "url": "https://arxiv.org/abs/1810.04805"
+      }
+    },
+    {
+      "claim": "GPT-2, released by OpenAI in 2019, demonstrated that decoder-only Transformers could achieve strong performance on language generation tasks with 1.5 billion parameters.",
+      "citation": {
+        "source": "Radford et al., OpenAI",
+        "year": 2019,
+        "url": "https://openai.com/research/better-language-models"
+      }
+    },
+    {
+      "claim": "GPT-3, released in 2020, scaled the decoder-only Transformer architecture to 175 billion parameters and demonstrated few-shot learning capabilities without fine-tuning.",
+      "citation": {
+        "source": "Brown et al., OpenAI",
+        "year": 2020,
+        "url": "https://arxiv.org/abs/2005.14165"
+      }
+    },
+    {
+      "claim": "Vision Transformer (ViT) was introduced by Google Research in 2020, demonstrating that pure Transformer architectures could be applied directly to image patches for computer vision tasks, achieving state-of-the-art results.",
+      "citation": {
+        "source": "Dosovitskiy et al., Google Research",
+        "year": 2020,
+        "url": "https://arxiv.org/abs/2010.11929"
+      }
+    },
+    {
+      "claim": "The Switch Transformer, introduced by Google in 2021, scaled to over 1.6 trillion parameters using sparse mixture-of-experts (MoE) architecture while maintaining computational efficiency.",
+      "citation": {
+        "source": "Fedus et al., Google Research",
+        "year": 2021,
+        "url": "https://arxiv.org/abs/2101.03961"
+      }
+    },
+    {
+      "claim": "ChatGPT was launched by OpenAI in November 2022, using Reinforcement Learning from Human Feedback (RLHF) to fine-tune GPT-3.5 for conversational interactions.",
+      "citation": {
+        "source": "OpenAI",
+        "year": 2022,
+        "url": "https://openai.com/blog/chatgpt"
+      }
+    },
+    {
+      "claim": "GPT-4, released in March 2023, introduced multimodal capabilities allowing the model to accept both text and image inputs, representing a significant architectural evolution in Transformer models.",
+      "citation": {
+        "source": "OpenAI",
+        "year": 2023,
+        "url": "https://openai.com/research/gpt-4"
+      }
+    },
+    {
+      "claim": "LLaMA (Large Language Model Meta AI) was released by Meta in February 2023, offering open-access Transformer models ranging from 7B to 65B parameters trained on publicly available datasets.",
+      "citation": {
+        "source": "Touvron et al., Meta AI",
+        "year": 2023,
+        "url": "https://arxiv.org/abs/2302.13971"
+      }
+    },
+    {
+      "claim": "Mistral 7B, released in September 2023, introduced grouped-query attention (GQA) and sliding window attention mechanisms to improve inference efficiency while maintaining strong performance.",
+      "citation": {
+        "source": "Jiang et al., Mistral AI",
+        "year": 2023,
+        "url": "https://arxiv.org/abs/2310.06825"
+      }
+    },
+    {
+      "claim": "Claude 3, released by Anthropic in March 2024, introduced a family of multimodal models with enhanced reasoning capabilities and extended context windows up to 200K tokens.",
+      "citation": {
+        "source": "Anthropic",
+        "year": 2024,
+        "url": "https://www.anthropic.com/news/claude-3-family"
+      }
+    },
+    {
+      "claim": "Gemini 1.5, announced by Google in February 2024, achieved a breakthrough with a context window of up to 1 million tokens using an efficient mixture-of-experts architecture.",
+      "citation": {
+        "source": "Google DeepMind",
+        "year": 2024,
+        "url": "https://blog.google/technology/ai/google-gemini-next-generation-model-february-2024"
+      }
+    }
+  ]
+}
