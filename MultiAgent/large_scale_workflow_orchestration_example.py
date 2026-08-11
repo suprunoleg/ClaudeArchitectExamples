@@ -28,35 +28,43 @@ class MigrationSynthesis(BaseModel):
     critical_issues_count: int = Field(description="Total number of critical issues found.")
     recommended_next_steps: list[str] = Field(description="Actionable next steps for the engineering team.")
 
+class FileReviewResult(BaseModel):
+    status: str = Field(description="'APPROVED' or 'CHANGES_REQUESTED'")
+    comments: str = Field(description="Review comments or vulnerabilities found.")
+
 # =====================================================================
 # 2. The Subagent (File Reviewer)
 # =====================================================================
 async def review_single_file_async(file_path: str) -> dict:
     """
-    Simulates an SDK subagent reviewing a single file. 
-    In reality, we would use the `query()` function from the SDK here for each file.
-    We mock the network call to avoid making 200 simultaneous real API calls in this demo.
+    An SDK subagent reviewing a single file using a real LLM call.
+    Uses asyncio.to_thread to run the synchronous SDK call without blocking.
     """
-    await asyncio.sleep(random.uniform(0.1, 0.3)) 
+    options = ClaudeAgentOptions(
+        model="claude-sonnet-4-5",
+        temperature=0,
+        response_model=FileReviewResult
+    )
     
-    has_error = random.random() < 0.10 
-    
-    if has_error:
-        status = "CHANGES_REQUESTED"
-        issues = [
-            "Found potential SQL injection vulnerability.",
-            "Legacy API usage detected.",
-            "Missing unit test coverage."
-        ]
-        comments = random.choice(issues)
-    else:
-        status = "APPROVED"
-        comments = "Code meets migration standards."
+    # We wrap the synchronous query in a thread to keep the asyncio event loop free
+    def run_query():
+        # In a real app we'd load the file content here
+        content = f"Simulated code content for {file_path}" 
         
+        for msg in query(
+            prompt=f"Review this file for security issues or legacy APIs:\n\n{content}",
+            options=options
+        ):
+            if isinstance(msg, ResultMessage) and msg.structured_output:
+                return msg.structured_output
+        return {"status": "CHANGES_REQUESTED", "comments": "Failed to extract result."}
+        
+    result_dict = await asyncio.to_thread(run_query)
+    
     return {
         "file": file_path,
-        "status": status,
-        "comments": comments
+        "status": result_dict.get("status", "CHANGES_REQUESTED"),
+        "comments": result_dict.get("comments", "")
     }
 
 # =====================================================================
@@ -145,8 +153,8 @@ class MigrationReviewWorkflow:
         print(f"{'='*80}")
 
 if __name__ == "__main__":
-    # Generate 200 dummy file names to simulate a large migration
-    dummy_migration_files = [f"src/legacy/PaymentModule_{i}.ts" for i in range(1, 201)]
+    # Generate 5 dummy file names (scaled down from 200 to avoid API rate limits in demo)
+    dummy_migration_files = [f"src/legacy/PaymentModule_{i}.ts" for i in range(1, 6)]
     
     workflow = MigrationReviewWorkflow(max_concurrent_workers=50)
     asyncio.run(workflow.run_large_scale_review(dummy_migration_files))

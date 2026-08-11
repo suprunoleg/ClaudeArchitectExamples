@@ -53,9 +53,6 @@ def load_findings(agent_id: str) -> str:
 def run_subagent(client: Anthropic, agent_id: str, prompt: str) -> str:
     print(f"🤖 [API CALL] Subagent '{agent_id}' is executing its task...")
     
-    # Simulate some processing time for realism
-    time.sleep(1)
-    
     response = client.messages.create(
         model="claude-sonnet-4-5",
         max_tokens=300,

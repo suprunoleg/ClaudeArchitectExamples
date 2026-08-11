@@ -60,11 +60,8 @@ def load_agent_state(module_name: str) -> str:
     return ""
 
 def explore_module(module_name: str, previous_context: str) -> str:
-    """Simulates a sub-agent exploring a large module over time."""
+    """A sub-agent exploring a large module over time."""
     print(f" [AGENT WORKING] Exploring codebase module: '{module_name}'...")
-    
-    # Simulating long-running API calls/exploration
-    time.sleep(1.5)
     
     try:
         # We pass context from previous modules to give the agent a unified view
