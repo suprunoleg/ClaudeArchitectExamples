@@ -11,6 +11,10 @@ import json
 from dotenv import load_dotenv
 from anthropic import Anthropic
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # Load environment variables (API Key)
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
@@ -68,7 +72,7 @@ def run_error_handling_example():
     # 2. First API Call
     print(">>> 1. Sending first API call (Claude attempts to transfer $500)...")
     response_1 = client.messages.create(
-        model="claude-sonnet-4-5",
+        model=DEFAULT_MODEL,
         max_tokens=1024,
         tools=[transfer_funds_tool],
         messages=messages
@@ -107,7 +111,7 @@ def run_error_handling_example():
             # 4. Second API Call (Claude self-corrects)
             print(">>> 3. Sending second API call (Claude reads the error and tries to fix it)...")
             response_2 = client.messages.create(
-                model="claude-sonnet-4-5",
+                model=DEFAULT_MODEL,
                 max_tokens=1024,
                 tools=[transfer_funds_tool],
                 messages=messages

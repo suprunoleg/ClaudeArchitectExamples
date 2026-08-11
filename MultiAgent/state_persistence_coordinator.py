@@ -14,6 +14,10 @@ import time
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # =====================================================================
 # State Persistence Coordinator Example
 # Demonstrates how a coordinator can use a manifest to recover state
@@ -54,7 +58,7 @@ def run_subagent(client: Anthropic, agent_id: str, prompt: str) -> str:
     print(f"🤖 [API CALL] Subagent '{agent_id}' is executing its task...")
     
     response = client.messages.create(
-        model="claude-sonnet-4-5",
+        model=DEFAULT_MODEL,
         max_tokens=300,
         messages=[{"role": "user", "content": prompt}]
     )

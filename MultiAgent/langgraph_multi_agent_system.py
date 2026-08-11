@@ -15,6 +15,10 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import SystemMessage, HumanMessage
 from langgraph.graph import StateGraph, START, END
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # ==============================================================================
 # LANGGRAPH MULTI-AGENT DETERMINISTIC WORKFLOW
 # ==============================================================================
@@ -61,7 +65,7 @@ def analyst_node(state: GraphState) -> GraphState:
     print(f"\n[NODE: ANALYST] 🕵️ Gathering structured facts on: '{state['topic']}'")
     
     # Langchain's ChatAnthropic automatically handles structured output binding!
-    llm = ChatAnthropic(model="claude-sonnet-4-5", temperature=0)
+    llm = ChatAnthropic(model=DEFAULT_MODEL, temperature=0)
     structured_llm = llm.with_structured_output(AnalystFindings)
     
     messages = [
@@ -86,7 +90,7 @@ def analyst_node(state: GraphState) -> GraphState:
 def synthesizer_node(state: GraphState) -> GraphState:
     print(f"\n[NODE: SYNTHESIZER] 📝 Formatting data into deeply nested Pydantic structure...")
     
-    llm = ChatAnthropic(model="claude-sonnet-4-5", temperature=0)
+    llm = ChatAnthropic(model=DEFAULT_MODEL, temperature=0)
     structured_llm = llm.with_structured_output(DeepResearchReport)
     
     # We pass the Analyst's Pydantic model directly into the prompt as a string

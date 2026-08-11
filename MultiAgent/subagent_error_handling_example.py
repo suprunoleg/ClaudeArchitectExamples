@@ -14,6 +14,10 @@ from langchain_core.tools import tool
 from langchain_anthropic import ChatAnthropic
 from langgraph.prebuilt import create_react_agent
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # Load API key
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
@@ -35,7 +39,7 @@ def research_subagent(topic: str) -> str:
     try:
         # We use the raw Anthropic client here to easily simulate a stream interruption
         with anthropic_client.messages.stream(
-            model="claude-sonnet-4-5",
+            model=DEFAULT_MODEL,
             max_tokens=1000,
             messages=[{"role": "user", "content": f"Write a detailed 3-paragraph research analysis on {topic}"}]
         ) as stream:
@@ -66,7 +70,7 @@ def build_and_run_workflow():
     print("=" * 70)
     
     # Initialize the Coordinator LLM
-    llm = ChatAnthropic(model="claude-sonnet-4-5", temperature=0)
+    llm = ChatAnthropic(model=DEFAULT_MODEL, temperature=0)
     
     # Define system instructions for the Coordinator
     system_prompt = (

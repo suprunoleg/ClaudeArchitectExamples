@@ -11,6 +11,10 @@ import os
 from dotenv import load_dotenv
 from anthropic import Anthropic
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # Load environment variables
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
@@ -31,7 +35,7 @@ def run_advanced_stop_reasons():
     print("Asking Claude to write a long essay, but setting max_tokens=10...")
     
     response_max = client.messages.create(
-        model="claude-sonnet-4-5",
+        model=DEFAULT_MODEL,
         max_tokens=10,
         messages=[{"role": "user", "content": "Write a 500-word essay about the history of Rome."}]
     )
@@ -48,7 +52,7 @@ def run_advanced_stop_reasons():
     print("Asking Claude to list three colors, but setting stop_sequences=['Green']...")
     
     response_seq = client.messages.create(
-        model="claude-sonnet-4-5",
+        model=DEFAULT_MODEL,
         max_tokens=100,
         stop_sequences=["Green"],
         messages=[{"role": "user", "content": "Reply with exactly these three colors on separate lines: Red, Green, Blue."}]
@@ -72,7 +76,7 @@ def run_advanced_stop_reasons():
         massive_prompt = "hello world " * 150000 
         
         response_context = client.messages.create(
-            model="claude-sonnet-4-5",
+            model=DEFAULT_MODEL,
             max_tokens=100,
             messages=[{"role": "user", "content": massive_prompt}]
         )

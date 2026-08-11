@@ -15,6 +15,10 @@ from dotenv import load_dotenv
 from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage
 from pydantic import BaseModel, Field
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # Load environment variables
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
@@ -41,25 +45,25 @@ async def review_single_file_async(file_path: str) -> dict:
     Uses asyncio.to_thread to run the synchronous SDK call without blocking.
     """
     options = ClaudeAgentOptions(
-        model="claude-sonnet-4-5",
-        temperature=0,
-        response_model=FileReviewResult
+        model=DEFAULT_MODEL,
+        output_format={
+            "type": "json_schema",
+            "schema": FileReviewResult.model_json_schema()
+        }
     )
     
-    # We wrap the synchronous query in a thread to keep the asyncio event loop free
-    def run_query():
-        # In a real app we'd load the file content here
-        content = f"Simulated code content for {file_path}" 
-        
-        for msg in query(
-            prompt=f"Review this file for security issues or legacy APIs:\n\n{content}",
-            options=options
-        ):
-            if isinstance(msg, ResultMessage) and msg.structured_output:
-                return msg.structured_output
-        return {"status": "CHANGES_REQUESTED", "comments": "Failed to extract result."}
-        
-    result_dict = await asyncio.to_thread(run_query)
+    # In a real app we'd load the file content here
+    content = f"Simulated code content for {file_path}" 
+    
+    result_dict = {"status": "CHANGES_REQUESTED", "comments": "Failed to extract result."}
+    
+    async for msg in query(
+        prompt=f"Review this file for security issues or legacy APIs:\n\n{content}",
+        options=options
+    ):
+        if isinstance(msg, ResultMessage) and msg.structured_output:
+            result_dict = msg.structured_output
+            break
     
     return {
         "file": file_path,
@@ -126,7 +130,7 @@ class MigrationReviewWorkflow:
         # Using the SDK to enforce structured output for the final report
         options = ClaudeAgentOptions(
             system_prompt="You are a Lead Staff Engineer synthesizing code review results.",
-            model="claude-sonnet-4-5",
+            model=DEFAULT_MODEL,
             output_format={
                 "type": "json_schema",
                 "schema": MigrationSynthesis.model_json_schema()

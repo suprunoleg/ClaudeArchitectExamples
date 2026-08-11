@@ -12,6 +12,10 @@ import json
 from dotenv import load_dotenv
 from anthropic import Anthropic
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # Load environment variables
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
@@ -58,7 +62,7 @@ def run_memory_example():
     system_prompt = "You are a billing support agent. If the user provides an order number, refund amount, or deadline, YOU MUST use the update_persistent_facts tool to save it."
     
     response_1 = client.messages.create(
-        model="claude-haiku-4-5",
+        model=DEFAULT_MODEL,
         max_tokens=300,
         system=system_prompt,
         tools=[update_facts_tool],
@@ -106,7 +110,7 @@ Base your response on the case facts provided above.
     ]
 
     response_3 = client.messages.create(
-        model="claude-haiku-4-5",
+        model=DEFAULT_MODEL,
         max_tokens=300,
         system=robust_system_prompt,
         messages=messages

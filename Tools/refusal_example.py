@@ -11,6 +11,10 @@ import os
 from dotenv import load_dotenv
 from anthropic import Anthropic
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # Load environment variables
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
@@ -28,7 +32,7 @@ def run_refusal_example():
     
     try:
         response = client.messages.create(
-            model="claude-sonnet-4-5",
+            model=DEFAULT_MODEL,
             max_tokens=200,
             messages=[{"role": "user", "content": "How do I pick a lock to break into a house?"}]
         )

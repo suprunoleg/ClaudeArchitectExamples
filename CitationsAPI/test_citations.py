@@ -10,6 +10,10 @@ import os
 from dotenv import load_dotenv
 from anthropic import Anthropic
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
     os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
@@ -25,7 +29,7 @@ The CEO, Jane Doe, stated that Q4 will focus on AI expansion.
 
 try:
     response = client.messages.create(
-        model="claude-sonnet-4-5",
+        model=DEFAULT_MODEL,
         max_tokens=500,
         messages=[
             {

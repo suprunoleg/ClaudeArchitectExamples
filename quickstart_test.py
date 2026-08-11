@@ -11,6 +11,10 @@ import os
 from dotenv import load_dotenv
 from anthropic import Anthropic
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # Load the environment variables from .env
 load_dotenv()
 
@@ -23,7 +27,7 @@ client = Anthropic(
 print("Sending test message to claude-sonnet-4-5...")
 try:
     message = client.messages.create(
-        model="claude-sonnet-4-5",
+        model=DEFAULT_MODEL,
         max_tokens=1024,
         messages=[
             {"role": "user", "content": "Hello, Claude! Are you receiving this? Please reply with a short greeting."}

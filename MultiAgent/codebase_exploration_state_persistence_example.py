@@ -15,6 +15,10 @@ import time
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
     os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
@@ -67,7 +71,7 @@ def explore_module(module_name: str, previous_context: str) -> str:
         # We pass context from previous modules to give the agent a unified view
         prompt = f"Analyze the {module_name} module. Prior context: {previous_context}"
         response = client.messages.create(
-            model="claude-sonnet-4-5",
+            model=DEFAULT_MODEL,
             max_tokens=200,
             messages=[{"role": "user", "content": prompt}]
         )
@@ -145,7 +149,7 @@ def run_exploration():
     try:
         final_prompt = f"You are a lead architect. Synthesize the following module findings into a single cohesive architectural summary:\n\n{accumulated_context}"
         response = client.messages.create(
-            model="claude-sonnet-4-5",
+            model=DEFAULT_MODEL,
             max_tokens=500,
             messages=[{"role": "user", "content": final_prompt}]
         )

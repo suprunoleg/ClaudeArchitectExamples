@@ -12,6 +12,10 @@ import time
 from dotenv import load_dotenv
 from anthropic import Anthropic
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # Load environment variables
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
@@ -40,7 +44,7 @@ class ResearcherSubagent:
             raise TimeoutError("Researcher API connection timed out.")
             
         return client.messages.create(
-            model="claude-haiku-4-5",
+            model=DEFAULT_MODEL,
             max_tokens=300,
             system="You are a researcher. Summarize the requested topic briefly.",
             messages=[{"role": "user", "content": prompt}]
@@ -53,7 +57,7 @@ class AnalystSubagent:
 
     def generate_response(self, research_data: str) -> str:
         return client.messages.create(
-            model="claude-haiku-4-5",
+            model=DEFAULT_MODEL,
             max_tokens=300,
             system="You are an analyst. Extract the most important metric/fact from the research.",
             messages=[{"role": "user", "content": research_data}]

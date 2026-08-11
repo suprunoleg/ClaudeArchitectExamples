@@ -13,6 +13,10 @@ from pydantic import BaseModel, Field
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import SystemMessage, HumanMessage
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
     os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
@@ -52,7 +56,7 @@ Output: 0.43
 
 def run_few_shot():
     # Haiku failed on these without few-shot prompting!
-    llm = ChatAnthropic(model="claude-haiku-4-5", temperature=0)
+    llm = ChatAnthropic(model=DEFAULT_MODEL, temperature=0)
     structured_llm = llm.with_structured_output(FinancialExtraction)
     
     print("=" * 80)

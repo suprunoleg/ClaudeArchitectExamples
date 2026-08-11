@@ -11,6 +11,10 @@ import json
 from dotenv import load_dotenv
 from anthropic import Anthropic
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # Load environment variables
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
@@ -34,7 +38,7 @@ def demonstrate_text_continuation():
     
     print("1. Sending initial request with max_tokens=20...")
     response1 = client.messages.create(
-        model="claude-sonnet-4-5",
+        model=DEFAULT_MODEL,
         max_tokens=20,
         messages=messages
     )
@@ -55,7 +59,7 @@ def demonstrate_text_continuation():
         messages.append({"role": "assistant", "content": truncated_text})
         
         response2 = client.messages.create(
-            model="claude-sonnet-4-5",
+            model=DEFAULT_MODEL,
             max_tokens=100,
             messages=messages
         )
@@ -88,7 +92,7 @@ def demonstrate_json_recovery():
     
     print("1. Requesting strict JSON with max_tokens=35...")
     response1 = client.messages.create(
-        model="claude-sonnet-4-5",
+        model=DEFAULT_MODEL,
         max_tokens=35,
         messages=messages
     )
@@ -109,7 +113,7 @@ def demonstrate_json_recovery():
         messages.append({"role": "assistant", "content": broken_json})
         
         response2 = client.messages.create(
-            model="claude-sonnet-4-5",
+            model=DEFAULT_MODEL,
             max_tokens=200,
             messages=messages
         )

@@ -12,6 +12,10 @@ from concurrent.futures import ThreadPoolExecutor
 from dotenv import load_dotenv
 from anthropic import Anthropic
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # Load environment variables
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
@@ -27,7 +31,7 @@ client = Anthropic()
 def run_style_checker(pr_content: str) -> str:
     print("  [Style-Checker] Starting analysis...")
     response = client.messages.create(
-        model="claude-sonnet-4-5",
+        model=DEFAULT_MODEL,
         max_tokens=300,
         messages=[{"role": "user", "content": f"Review this PR for Python style issues. Output 0 linting errors if none found.\n\n{pr_content}"}]
     )
@@ -37,7 +41,7 @@ def run_style_checker(pr_content: str) -> str:
 def run_security_scanner(pr_content: str) -> str:
     print("  [Security-Scanner] Starting analysis...")
     response = client.messages.create(
-        model="claude-sonnet-4-5",
+        model=DEFAULT_MODEL,
         max_tokens=300,
         messages=[{"role": "user", "content": f"Review this PR for security issues (e.g. SQL injection). Flag any critical vulnerabilities.\n\n{pr_content}"}]
     )
@@ -47,7 +51,7 @@ def run_security_scanner(pr_content: str) -> str:
 def run_test_coverage(pr_content: str) -> str:
     print("  [Test-Coverage] Starting analysis...")
     response = client.messages.create(
-        model="claude-sonnet-4-5",
+        model=DEFAULT_MODEL,
         max_tokens=300,
         messages=[{"role": "user", "content": f"Analyze test coverage implications for this PR. State if it meets an 80% threshold.\n\n{pr_content}"}]
     )
@@ -109,7 +113,7 @@ class CoordinatorAgent:
         # (It should return 3 tool_use blocks in a single response)
         # -----------------------------------------------------------------
         response = client.messages.create(
-            model="claude-sonnet-4-5",
+            model=DEFAULT_MODEL,
             max_tokens=1000,
             system=system_prompt,
             tools=self.tools,
@@ -166,7 +170,7 @@ class CoordinatorAgent:
         print("\nCoordinator is synthesizing the final PR review...\n")
         
         final_response = client.messages.create(
-            model="claude-sonnet-4-5",
+            model=DEFAULT_MODEL,
             max_tokens=1000,
             system=system_prompt,
             tools=self.tools,

@@ -12,6 +12,10 @@ import json
 from dotenv import load_dotenv
 from anthropic import Anthropic, BadRequestError
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # Load environment variables
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
@@ -40,7 +44,7 @@ def demonstrate_token_counting():
     # Note: We pass the exact model and messages array to get a highly accurate count.
     try:
         token_response = client.messages.count_tokens(
-            model="claude-sonnet-4-5",
+            model=DEFAULT_MODEL,
             messages=messages
         )
         print(f"   -> API confirmed payload is exactly {token_response.input_tokens} tokens.")
@@ -91,7 +95,7 @@ def demonstrate_summarization_checkpoint():
     try:
         summary_response = client.messages.create(
             # Using the required model for this workspace
-            model="claude-sonnet-4-5", 
+            model=DEFAULT_MODEL, 
             max_tokens=300,
             messages=[{"role": "user", "content": summarization_prompt}]
         )

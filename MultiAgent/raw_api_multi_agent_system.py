@@ -12,6 +12,10 @@ import json
 from pydantic import BaseModel, Field
 from anthropic import Anthropic
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # ==============================================================================
 # RAW API MULTI-AGENT SYSTEM with .PARSE() STRUCTURED OUTPUT
 # ==============================================================================
@@ -85,7 +89,7 @@ def analyst_agent(topic: str) -> str:
         try:
             print("[ANALYST] 🤔 Thinking / Searching...")
             response = client.messages.create(
-                model="claude-4-5-sonnet-20250219",
+                model=DEFAULT_MODEL,
                 max_tokens=2048,
                 system=system_prompt,
                 tools=tools,
@@ -125,7 +129,7 @@ def synthesizer_agent(raw_notes: str, topic: str) -> DeepResearchReport | str:
     try:
         # MAGIC: We use `.parse()` exclusively on the Synthesizer to guarantee the final output structure!
         response = client.messages.parse(
-            model="claude-4-5-sonnet-20250219",
+            model=DEFAULT_MODEL,
             max_tokens=4096,
             system="You are a Synthesizer Agent. Convert the raw notes into the highly structured nested report.",
             messages=[{"role": "user", "content": f"Topic: {topic}\n\nRaw Notes:\n{raw_notes}"}],

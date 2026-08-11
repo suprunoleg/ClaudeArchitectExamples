@@ -16,6 +16,10 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_core.tools import tool
 from langgraph.prebuilt import create_react_agent
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
     os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
@@ -41,7 +45,7 @@ DATASET = [
 ]
 
 def run_verification_loop():
-    llm = ChatAnthropic(model="claude-haiku-4-5", temperature=0)
+    llm = ChatAnthropic(model=DEFAULT_MODEL, temperature=0)
     
     # Agent A: The blind extractor
     extractor_llm = llm.with_structured_output(FinancialExtraction)

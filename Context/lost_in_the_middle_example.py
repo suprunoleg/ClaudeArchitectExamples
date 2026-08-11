@@ -12,6 +12,10 @@ import random
 from dotenv import load_dotenv
 from anthropic import Anthropic
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # Load environment variables
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
@@ -107,7 +111,7 @@ def run_synthesis(document: str, strategy_name: str):
     print(f"💾 Saved full context to: {filepath}")
     
     response = client.messages.create(
-        model="claude-haiku-4-5", # Using haiku to intentionally exacerbate context-window attention issues
+        model=DEFAULT_MODEL, # Using haiku to intentionally exacerbate context-window attention issues
         max_tokens=300,
         system=system_prompt,
         messages=[{"role": "user", "content": user_prompt}]

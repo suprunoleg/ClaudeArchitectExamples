@@ -69,4 +69,4 @@ The core purpose of this project is to provide complete, end-to-end working exam
 2. **Single-File Preference:** Consolidate the full flow into a single, concise file whenever possible so the user can easily see the complete implementation context at a glance.
 3. **Ready to Learn:** The code must serve as a comprehensive learning resource. Even if the user doesn't run the script, the entire flow (from setup to execution) must be evident.
 4. **Short & Concise:** Keep the example as brief as possible while still being a complete, end-to-end integration.
-5. **Use Claude 4.5:** ALWAYS use the model string `claude-sonnet-4-5` in all API and SDK calls.
+5. **Use Claude 4.5 Haiku:** ALWAYS use the model string `claude-haiku-4-5` as the default model via a `DEFAULT_MODEL` constant in all API and SDK calls.

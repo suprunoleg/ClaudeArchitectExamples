@@ -11,6 +11,10 @@ import os
 from dotenv import load_dotenv
 from anthropic import Anthropic
 
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+
 # Load environment variables
 load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
@@ -31,7 +35,7 @@ class ResearchSubagent:
         # In a real scenario, this agent would use tools to search the web or internal docs.
         # Here we just use the model to generate a simulated factual response.
         response = client.messages.create(
-            model="claude-sonnet-4-5",
+            model=DEFAULT_MODEL,
             max_tokens=400,
             system="You are an expert market research subagent. Provide concise, factual information strictly about the requested subtopic.",
             messages=[{"role": "user", "content": sub_query}]
@@ -71,7 +75,7 @@ class CoordinatorAgent:
         }
         
         response = client.messages.create(
-            model="claude-sonnet-4-5",
+            model=DEFAULT_MODEL,
             max_tokens=500,
             system=(
                 "You are a brilliant coordinator agent. Your job is to break down complex research "
@@ -128,7 +132,7 @@ class CoordinatorAgent:
         """
         
         final_report = client.messages.create(
-            model="claude-sonnet-4-5",
+            model=DEFAULT_MODEL,
             max_tokens=1000,
             system="You are a report synthesizer. Synthesize the provided research into a cohesive, highly professional report.",
             messages=[{"role": "user", "content": synthesis_prompt}]
