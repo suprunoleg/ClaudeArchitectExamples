@@ -1,4 +1,17 @@
-# Python Virtual Environment Setup
+# Claude Architect Examples
+
+This repository contains fully-runnable, end-to-end Python examples demonstrating advanced architectural patterns for building with Anthropic's Claude API.
+
+## Major Patterns Covered
+- **Multi-Agent Systems**: LangGraph state machines, dynamic sub-agent delegation, parallel execution, and token orchestration.
+- **Structured Output & Tool Use**: Guaranteed JSON generation via Pydantic, complex nested schemas, and advanced tool definitions.
+- **Context & Memory**: "Lost in the Middle" context handling, persistent state across sessions, and fact extraction.
+- **Evaluation & Labeling**: Stratified random sampling for diverse evaluation sets, confidence calibration, and automated verification loops.
+- **Advanced API Features**: Native Citations API usage, refusal handling, and lifecycle hooks.
+
+---
+
+## Environment Setup
 
 This guide provides instructions on how to create, activate, and manage a Python virtual environment (`venv`) for this project.
 
