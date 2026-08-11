@@ -1,0 +1,7 @@
+{
+    "AuthenticationService": "COMPLETED",
+    "PaymentGateway": "COMPLETED",
+    "UserProfiles": "COMPLETED",
+    "NotificationQueue": "COMPLETED",
+    "ReportingEngine": "COMPLETED"
+}

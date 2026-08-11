@@ -1,0 +1,25 @@
+# NotificationQueue Module Analysis
+
+I'm ready to analyze the NotificationQueue module for you. However, I don't see the actual code provided in your message.
+
+## What I Need
+
+Please share the following to conduct a thorough analysis:
+
+### 1. **Core Module Code**
+- NotificationQueue class/service implementation
+- Queue management logic
+- Message processing code
+- Worker/consumer implementations
+- Producer/publisher code
+
+### 2. **Related Files** (if applicable)
+- Notification models/schemas
+- Queue configuration
+- Message broker setup (RabbitMQ, Redis, Kafka, SQS, etc.)
+- Retry/dead letter queue handling
+- Notification delivery handlers (email, SMS, push, webhook)
+- Database models for notification tracking
+
+### 3. **Context Information**
+- Programming language/framework (Node.js, Python, Java, .NET, etc.)

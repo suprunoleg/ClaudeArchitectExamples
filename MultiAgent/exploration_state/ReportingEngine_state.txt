@@ -1,0 +1,27 @@
+# ReportingEngine Module Analysis
+
+I'm ready to analyze the ReportingEngine module for you. However, I don't see the actual code provided in your message.
+
+## What I Need
+
+Please share the following to conduct a thorough analysis:
+
+### 1. **Core Module Code**
+- ReportingEngine class/service implementation
+- Report generation logic
+- Data aggregation/processing code
+- Template rendering system
+- Export functionality (PDF, Excel, CSV, etc.)
+- Scheduling/automation code
+
+### 2. **Related Files** (if applicable)
+- Report models/schemas/definitions
+- Query builders or data access layers
+- Template files (HTML, XML, etc.)
+- Configuration files
+- Caching mechanisms
+- Database views or stored procedures
+- Report repository/storage logic
+
+### 3. **Context Information**
+- Programming language/framework (Node.js, Python, Java, .
