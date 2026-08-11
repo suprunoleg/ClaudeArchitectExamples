@@ -58,3 +58,28 @@ When you are done working, deactivate the environment by running:
 ```bash
 deactivate
 ```
+
+---
+
+## 5. Running the Examples
+
+This repository is designed as a collection of **fully self-contained, end-to-end runnable examples**. You do not need to stitch snippets together—every single `.py` file is a complete program!
+
+To run any example, simply execute it directly using python while your virtual environment is active. 
+
+> **Important (Windows Users):** Because many of these scripts print beautiful colorful emojis to the console (like 🕵️ and ✅), you may need to force UTF-8 encoding in PowerShell before running them to avoid a `UnicodeEncodeError`:
+> ```powershell
+> $env:PYTHONIOENCODING="utf-8"
+> ```
+
+### Run Examples:
+```bash
+# Run the simple quickstart test
+python quickstart_test.py
+
+# Run a specific sub-folder example (e.g., Stratified Sampling)
+python Labeling/stratified_sampling_example.py
+
+# Run a complex Multi-Agent workflow
+python MultiAgent/large_scale_workflow_orchestration_example.py
+```
