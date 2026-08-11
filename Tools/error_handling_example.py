@@ -1,3 +1,11 @@
+"""
+Tool Error Handling
+
+Shows basic patterns for handling errors when a model attempts to call a tool
+incorrectly or the tool fails. It introduces the concept of feeding the
+exception string back to the model as a `tool_result`.
+"""
+
 import os
 import json
 from dotenv import load_dotenv

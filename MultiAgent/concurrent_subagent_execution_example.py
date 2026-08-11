@@ -1,3 +1,11 @@
+"""
+Concurrent Sub-agent Execution
+
+Shows how to run multiple sub-agents in parallel to drastically reduce overall
+execution time for parallelizable tasks. This uses standard Python threading
+combined with Anthropic API calls to achieve true asynchronous fan-out.
+"""
+
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -12,28 +20,39 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 client = Anthropic()
 
 # =====================================================================
-# 1. The Subagents (Simulated as functions for this example)
+# 1. The Subagents
 # =====================================================================
-# We use time.sleep() to simulate the time it takes for a subagent 
-# to process data or call its own LLM.
+# Each function calls the Anthropic API to act as a specialized subagent.
 
 def run_style_checker(pr_content: str) -> str:
     print("  [Style-Checker] Starting analysis...")
-    time.sleep(2) # Simulates a 2-second style check
+    response = client.messages.create(
+        model="claude-sonnet-4-5",
+        max_tokens=300,
+        messages=[{"role": "user", "content": f"Review this PR for Python style issues. Output 0 linting errors if none found.\n\n{pr_content}"}]
+    )
     print("  [Style-Checker] Finished analysis.")
-    return "Style Check: Passed. 0 linting errors."
+    return response.content[0].text
 
 def run_security_scanner(pr_content: str) -> str:
     print("  [Security-Scanner] Starting analysis...")
-    time.sleep(3) # Simulates a 3-second security scan
+    response = client.messages.create(
+        model="claude-sonnet-4-5",
+        max_tokens=300,
+        messages=[{"role": "user", "content": f"Review this PR for security issues (e.g. SQL injection). Flag any critical vulnerabilities.\n\n{pr_content}"}]
+    )
     print("  [Security-Scanner] Finished analysis.")
-    return "Security Scan: WARNING - Potential SQL injection vulnerability found."
+    return response.content[0].text
 
 def run_test_coverage(pr_content: str) -> str:
     print("  [Test-Coverage] Starting analysis...")
-    time.sleep(2.5) # Simulates a 2.5-second coverage check
+    response = client.messages.create(
+        model="claude-sonnet-4-5",
+        max_tokens=300,
+        messages=[{"role": "user", "content": f"Analyze test coverage implications for this PR. State if it meets an 80% threshold.\n\n{pr_content}"}]
+    )
     print("  [Test-Coverage] Finished analysis.")
-    return "Test Coverage: 85% (Meets 80% threshold)."
+    return response.content[0].text
 
 # Registry mapping tool names to their corresponding subagent functions
 SUBAGENTS = {

@@ -1,3 +1,12 @@
+"""
+Chain of Thought (CoT) Extraction
+
+Demonstrates using Chain of Thought prompting to improve accuracy in data
+extraction and labeling tasks. Forcing the model to explain its reasoning
+step-by-step before arriving at an answer drastically reduces hallucinations
+and calculation errors.
+"""
+
 import os
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field

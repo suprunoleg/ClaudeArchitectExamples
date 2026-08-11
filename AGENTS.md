@@ -54,6 +54,7 @@ Always ensure commands run within the dedicated Python virtual environment `.ven
    - Follow standard Python PEP 8 style guidelines.
    - Maintain type annotations and docstrings for functions and classes.
    - Do not remove or mutate unrelated comments or docstrings.
+   - **File Introductions:** Each script file (especially complicated ones) must begin with a concise, descriptive introductory comment describing the pattern and purpose of the script. If needed, you can add 1-2 more sentences (ONLY IF IT ADDS VALUE).
 
 3. **Verification:**
    - After creating or modifying Python scripts, test execution using the `.venv` interpreter.

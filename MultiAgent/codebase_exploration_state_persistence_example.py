@@ -1,3 +1,12 @@
+"""
+Stateful Codebase Exploration
+
+Demonstrates an agent traversing a codebase while persisting its exploration
+state, preventing redundant work across sessions. Tracking visited files and
+outstanding questions allows the agent to pause and safely resume long-running
+codebase audits.
+"""
+
 import os
 import json
 import sys

@@ -1,3 +1,11 @@
+"""
+Well-Defined Tools
+
+Provides best practices for defining tool schemas and descriptions to ensure
+the model uses them correctly and reliably. Good tool descriptions are often
+more important than the prompt itself in guiding the model's behavior.
+"""
+
 import os
 import json
 from dotenv import load_dotenv

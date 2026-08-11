@@ -1,3 +1,12 @@
+"""
+Confidence Calibration
+
+Explores techniques to make the model express its confidence level accurately
+when labeling or categorizing data. By forcing the model to evaluate its own
+certainty, downstream systems can flag low-confidence outputs for human
+review.
+"""
+
 import os
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field

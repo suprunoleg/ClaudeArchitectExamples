@@ -1,3 +1,11 @@
+"""
+Large Scale Workflow Orchestration
+
+Explores techniques for coordinating many agents across long-running, multi-
+step workflows. It highlights best practices for state management and
+checkpointing so that failures do not require restarting the entire workflow.
+"""
+
 import os
 import random
 import asyncio

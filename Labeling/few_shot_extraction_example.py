@@ -1,3 +1,12 @@
+"""
+Few-Shot Extraction
+
+Illustrates how to use few-shot examples (providing examples in the prompt) to
+guide the model in correctly formatting and labeling outputs. Providing
+explicit positive and negative examples often yields better zero-shot
+performance than detailed prompt instructions alone.
+"""
+
 import os
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field

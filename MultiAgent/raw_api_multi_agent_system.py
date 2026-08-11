@@ -1,3 +1,12 @@
+"""
+Raw API Multi-Agent System
+
+Shows how to build a multi-agent system from scratch using only the raw
+Anthropic API without higher-level frameworks. This gives developers maximum
+control and visibility over the exact messages and tool calls being sent to
+the model.
+"""
+
 import os
 import json
 from pydantic import BaseModel, Field

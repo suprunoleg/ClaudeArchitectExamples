@@ -1,3 +1,11 @@
+"""
+Max Tokens Handling
+
+Demonstrates how to properly detect and handle scenarios where the model
+generation hits the max_tokens limit. It automatically issues follow-up
+prompts to smoothly resume the generation exactly where the model left off.
+"""
+
 import os
 import json
 from dotenv import load_dotenv

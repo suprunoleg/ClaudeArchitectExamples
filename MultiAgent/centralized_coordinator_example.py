@@ -1,3 +1,12 @@
+"""
+Centralized Coordinator Agent
+
+Implements a hierarchical multi-agent pattern where a central coordinator
+routes tasks to specialized sub-agents and aggregates results. This separation
+of concerns allows each sub-agent to have a highly focused prompt, improving
+overall system accuracy.
+"""
+
 import os
 import time
 from dotenv import load_dotenv

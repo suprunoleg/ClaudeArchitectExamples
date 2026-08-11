@@ -1,3 +1,11 @@
+"""
+Sub-agent Error Handling
+
+Demonstrates robust error handling and recovery mechanisms when sub-agents
+fail or return invalid responses. It implements automatic retries and fallback
+strategies to ensure the top-level coordinator doesn't crash.
+"""
+
 import os
 from dotenv import load_dotenv
 

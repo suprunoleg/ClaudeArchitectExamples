@@ -1,3 +1,12 @@
+"""
+Tool Refusal Handling
+
+Illustrates how to detect and gracefully handle situations where the model
+refuses to use a requested tool. This is crucial for maintaining a good user
+experience when the model triggers a safety filter or deems a request
+inappropriate.
+"""
+
 import os
 from dotenv import load_dotenv
 from anthropic import Anthropic

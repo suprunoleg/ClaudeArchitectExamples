@@ -1,3 +1,12 @@
+"""
+Dynamic Query Decomposition
+
+Demonstrates an agent breaking down a complex user query into smaller,
+manageable sub-queries to be handled independently. This divide-and-conquer
+strategy is necessary when a single prompt cannot encompass the breadth of a
+complex user request.
+"""
+
 import os
 from dotenv import load_dotenv
 from anthropic import Anthropic

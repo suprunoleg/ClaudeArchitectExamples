@@ -1,3 +1,11 @@
+"""
+Comprehensive Tool Error Handling
+
+Demonstrates an exhaustive approach to catching and recovering from all
+possible errors during tool execution. This ensures that the agent is always
+fed back a meaningful error message so it can attempt a self-correction.
+"""
+
 import os
 import time
 import json

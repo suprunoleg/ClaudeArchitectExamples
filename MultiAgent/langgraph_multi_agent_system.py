@@ -1,3 +1,12 @@
+"""
+LangGraph Multi-Agent System
+
+Provides an example of building a multi-agent system using the LangGraph
+framework for structured state and routing. LangGraph offers a cyclic graph
+approach, making it easier to define robust loops and conditional transitions
+between agents.
+"""
+
 import os
 from typing import TypedDict
 from pydantic import BaseModel, Field

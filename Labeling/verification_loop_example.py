@@ -1,3 +1,12 @@
+"""
+Verification Loop
+
+Shows a pattern where the model's output is evaluated and potentially fed back
+into the model for self-correction or multi-step verification. This iterative
+critique process is highly effective for complex reasoning tasks that require
+high precision.
+"""
+
 import os
 import re
 from dotenv import load_dotenv

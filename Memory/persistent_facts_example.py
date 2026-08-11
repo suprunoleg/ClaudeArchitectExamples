@@ -1,3 +1,12 @@
+"""
+Persistent Facts Memory
+
+Demonstrates how to extract and store facts from conversations into a
+persistent memory store for future retrieval. This enables agents to maintain
+long-term context across multiple independent sessions and build user profiles
+over time.
+"""
+
 import os
 import json
 from dotenv import load_dotenv

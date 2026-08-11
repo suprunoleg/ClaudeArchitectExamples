@@ -1,3 +1,11 @@
+"""
+Citations Testing
+
+Test script to validate the functionality of the native citations
+implementation. It verifies that the citations point to the correct document
+indices and extract the expected text segments.
+"""
+
 import os
 from dotenv import load_dotenv
 from anthropic import Anthropic

@@ -1,3 +1,12 @@
+"""
+Context Window Management
+
+Illustrates strategies for managing the context window limit in multi-agent
+workflows, such as summarization and selective memory. It actively prunes
+older messages and compresses context to prevent the agent from hitting
+maximum token thresholds.
+"""
+
 import os
 import json
 from dotenv import load_dotenv

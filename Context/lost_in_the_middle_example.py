@@ -1,3 +1,12 @@
+"""
+Lost in the Middle Mitigation
+
+Demonstrates strategies to mitigate the "lost in the middle" phenomenon where
+LLMs struggle to recall information placed in the middle of long contexts.
+Techniques like prompt re-ordering and attention-forcing cues are used to
+ensure the model evaluates all provided data.
+"""
+
 import os
 import random
 from dotenv import load_dotenv

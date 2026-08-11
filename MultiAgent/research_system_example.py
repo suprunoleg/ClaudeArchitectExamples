@@ -1,3 +1,12 @@
+"""
+Research Agent System
+
+Implements a specialized multi-agent workflow designed for deep research,
+involving searching, reading, and synthesizing information. It typically
+involves a planner agent, researcher agents, and a writer agent working in
+tandem.
+"""
+
 import os
 import asyncio
 from pydantic import BaseModel, Field

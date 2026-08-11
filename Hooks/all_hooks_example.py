@@ -1,3 +1,12 @@
+"""
+API Event Hooks
+
+Shows how to implement pre- and post-execution hooks to intercept, log, or
+modify API requests and responses. Hooks are a powerful architectural pattern
+for injecting observability, auditing, and fallback logic without polluting
+the core business logic.
+"""
+
 import os
 import json
 import asyncio

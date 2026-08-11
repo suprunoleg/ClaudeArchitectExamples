@@ -1,3 +1,12 @@
+"""
+Report Generation (Context Management)
+
+Illustrates how to manage large amounts of context when generating
+comprehensive reports, handling context limits effectively. The pattern
+demonstrates chunking and iterative summarization to maintain high quality
+output without exceeding token limits.
+"""
+
 import os
 import random
 

@@ -1,3 +1,12 @@
+"""
+Batch Processing with Custom IDs
+
+Shows how to efficiently process multiple independent tasks (batching) while
+tracking them using custom identifiers. This asynchronous approach is
+essential for scaling LLM workflows to handle thousands of documents
+concurrently.
+"""
+
 import os
 import re
 from dotenv import load_dotenv

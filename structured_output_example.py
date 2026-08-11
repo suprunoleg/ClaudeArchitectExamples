@@ -1,3 +1,11 @@
+"""
+Structured Output
+
+Shows the basic approach for extracting structured data (JSON) from text using
+tool use with the Anthropic API. Tool use provides a reliable way to force the
+model into a deterministic JSON format, significantly reducing parsing errors.
+"""
+
 import asyncio
 import os
 from pydantic import BaseModel, Field

@@ -1,3 +1,11 @@
+"""
+State Persistence Coordinator
+
+Shows how a coordinator agent can save and load its internal state to pause
+and resume complex workflows. This is vital for long-running workflows that
+might be interrupted by user input or transient network failures.
+"""
+
 import os
 import json
 import sys

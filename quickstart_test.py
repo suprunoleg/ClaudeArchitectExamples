@@ -1,3 +1,12 @@
+"""
+Quickstart Test
+
+A simple test script to verify that the Anthropic API connection and
+authentication are working correctly. Run this first to ensure your `.env`
+file and API keys are properly configured before diving into more complex
+examples.
+"""
+
 import os
 from dotenv import load_dotenv
 from anthropic import Anthropic

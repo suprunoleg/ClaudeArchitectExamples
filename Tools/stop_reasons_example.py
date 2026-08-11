@@ -1,3 +1,11 @@
+"""
+Basic Stop Reasons
+
+Shows how to parse and act upon the standard stop_reasons provided in the
+model's response. It provides the foundation for building basic interaction
+loops.
+"""
+
 import os
 import json
 from dotenv import load_dotenv

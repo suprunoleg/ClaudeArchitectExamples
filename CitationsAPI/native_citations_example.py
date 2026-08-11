@@ -1,3 +1,12 @@
+"""
+Native Citations
+
+Demonstrates how to use Anthropic's native citation features to ground model
+responses in specific documents and retrieve exact quotes. This feature is
+critical for building trustworthy RAG applications where users need to verify
+the source of the model's claims.
+"""
+
 import os
 from dotenv import load_dotenv
 from anthropic import Anthropic

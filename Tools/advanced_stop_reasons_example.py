@@ -1,3 +1,12 @@
+"""
+Advanced Stop Reasons
+
+Explores complex logic based on the various stop_reasons returned by the
+Anthropic API (e.g., tool_use vs. end_turn). Understanding these reasons
+allows you to dictate exactly when control should return to the application vs
+the user.
+"""
+
 import os
 from dotenv import load_dotenv
 from anthropic import Anthropic
