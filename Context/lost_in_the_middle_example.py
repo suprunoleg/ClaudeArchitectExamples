@@ -1,4 +1,5 @@
 import os
+import random
 from dotenv import load_dotenv
 from anthropic import Anthropic
 
@@ -16,25 +17,27 @@ client = Anthropic()
 # 100k tokens, we pack a very specific flag ("CRITICAL_REGULATORY_RISK: True") 
 # into the exact middle section, surrounded by lots of distracting filler text.
 
-def generate_filler(topic: str, length: int = 50) -> str:
-    return f"The {topic} analysis shows standard positive growth indicators. " * length
+def load_reports_from_disk():
+    base_dir = os.path.dirname(__file__)
+    reports_dir = os.path.join(base_dir, "reports_data")
+    
+    files = [
+        ("Market Sizing", "report_1_market_sizing.txt"),
+        ("Competitor Pricing", "report_2_competitor_pricing.txt"),
+        ("Regulatory Risk", "report_3_regulatory_risk.txt"),
+        ("Customer Sentiment", "report_4_customer_sentiment.txt"),
+        ("Distribution Channels", "report_5_distribution_channels.txt")
+    ]
+    
+    loaded_reports = []
+    for title, filename in files:
+        filepath = os.path.join(reports_dir, filename)
+        with open(filepath, "r", encoding="utf-8") as f:
+            loaded_reports.append((title, f.read()))
+            
+    return loaded_reports
 
-market_sizing = f"Market Sizing Report\n{generate_filler('market')}\nThe total addressable market is $50B.\n{generate_filler('market')}"
-competitor_pricing = f"Competitor Pricing\n{generate_filler('pricing')}\nCompetitors charge $10/mo.\n{generate_filler('pricing')}"
-
-# THE MIDDLE SECTION (Vulnerable to being ignored)
-regulatory_risk = f"Regulatory Risk\n{generate_filler('regulation', 20)}\nCRITICAL_REGULATORY_RISK: The new EU data laws will ban our core product next year.\n{generate_filler('regulation', 20)}"
-
-customer_sentiment = f"Customer Sentiment\n{generate_filler('sentiment')}\nCustomers love the UI.\n{generate_filler('sentiment')}"
-distribution = f"Distribution Channels\n{generate_filler('distribution')}\nDirect sales are best.\n{generate_filler('distribution')}"
-
-reports = [
-    ("Market Sizing", market_sizing),
-    ("Competitor Pricing", competitor_pricing),
-    ("Regulatory Risk", regulatory_risk),
-    ("Customer Sentiment", customer_sentiment),
-    ("Distribution Channels", distribution)
-]
+reports = load_reports_from_disk()
 
 
 # =====================================================================
@@ -85,11 +88,20 @@ def run_synthesis(document: str, strategy_name: str):
     
     system_prompt = "You are a Chief Strategy Officer. Synthesize the provided research document into a brief 3-bullet point executive summary. You MUST capture the most critical existential threats to the business."
     
+    user_prompt = f"Here is the aggregated report to analyze:\n\n<report_content>\n{document}\n</report_content>"
+    
+    # Save the prompt to a file so we can inspect what the model sees
+    filename = strategy_name.split()[0].lower() + "_pattern_prompt.txt"
+    filepath = os.path.join(os.path.dirname(__file__), filename)
+    with open(filepath, "w", encoding="utf-8") as f:
+        f.write(f"--- SYSTEM PROMPT ---\n{system_prompt}\n\n--- USER PROMPT ---\n{user_prompt}")
+    print(f"💾 Saved full context to: {filepath}")
+    
     response = client.messages.create(
-        model="claude-sonnet-4-5", # Model changed per project rules
+        model="claude-haiku-4-5", # Using haiku to intentionally exacerbate context-window attention issues
         max_tokens=300,
         system=system_prompt,
-        messages=[{"role": "user", "content": f"Here is the aggregated report to analyze:\n\n<report_content>\n{document}\n</report_content>"}]
+        messages=[{"role": "user", "content": user_prompt}]
     )
     
     result = response.content[0].text
