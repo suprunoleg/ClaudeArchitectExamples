@@ -10,6 +10,9 @@ tandem.
 import os
 import asyncio
 from pydantic import BaseModel, Field
+
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
 from claude_agent_sdk import (
     query,
     ClaudeAgentOptions,
@@ -76,7 +79,9 @@ async def run_coordinator(user_request: str):
     # We configure the main Coordinator agent by passing the subagents into its options.
     # We also use the native 'output_format' property with our Pydantic schema to guarantee 
     # the Coordinator's final response is a strictly structured JSON object!
+    # We override the main system prompt for this specific query so the Coordinator knows its role.
     options = ClaudeAgentOptions(
+        model=DEFAULT_MODEL,
         agents={
             "Researcher": researcher_agent,
             "Synthesizer": synthesizer_agent
@@ -84,22 +89,19 @@ async def run_coordinator(user_request: str):
         output_format={
             "type": "json_schema",
             "schema": FinalRecommendation.model_json_schema()
-        }
-    )
-    
-    # We override the main system prompt for this specific query so the Coordinator knows its role.
-    coordinator_system_prompt = (
-        "You are the Coordinator Agent. You manage a team of specialists. "
-        "To satisfy the user's request, first use the `Agent` tool to invoke the 'Researcher' to gather facts. "
-        "Once you have the facts, you MUST use the `Agent` tool again to invoke the 'Synthesizer' to format them. "
-        "Finally, present the synthesized data to the user."
+        },
+        system_prompt=(
+            "You are the Coordinator Agent. You manage a team of specialists. "
+            "To satisfy the user's request, first use the `Agent` tool to invoke the 'Researcher' to gather facts. "
+            "Once you have the facts, you MUST use the `Agent` tool again to invoke the 'Synthesizer' to format them. "
+            "Finally, present the synthesized data to the user."
+        )
     )
     
     try:
         # We use the SDK's `query` helper to automatically manage the loop and yield the ResultMessage
         async for msg in query(
             prompt=user_request, 
-            system_prompt=coordinator_system_prompt,
             options=options
         ):
             if msg.type == "assistant":
