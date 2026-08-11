@@ -10,6 +10,13 @@ import asyncio
 import os
 from pydantic import BaseModel, Field
 from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
 
 # ==============================================================================
 # STRUCTURED OUTPUT FORMAT EXAMPLE
@@ -33,6 +40,7 @@ async def main():
     # 2. Pass the Pydantic schema into agent options via output_format
     # We use model_json_schema() to easily convert the Pydantic class into JSON Schema!
     options = ClaudeAgentOptions(
+        model=DEFAULT_MODEL,
         output_format={
             "type": "json_schema",
             "schema": AnalysisResult.model_json_schema()
@@ -46,10 +54,11 @@ async def main():
         options=options
     ):
         # Optional: Print out the agent's progress
-        if message.type == "assistant":
+        m_type = getattr(message, "type", None)
+        if m_type == "assistant":
             pass # You can log intermediate thoughts here
-        elif message.type == "tool_use":
-            print(f"  [Tool Use] Calling {message.tool_name}...")
+        elif m_type == "tool_use":
+            print(f"  [Tool Use] Calling {getattr(message, 'tool_name', 'tool')}...")
             
         # 4. Retrieve structured output from ResultMessage
         if isinstance(message, ResultMessage):
@@ -73,4 +82,7 @@ if __name__ == "__main__":
         print("WARNING: Using dummy API key. Calls will fail, but the architecture is visible.")
         os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
         
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")

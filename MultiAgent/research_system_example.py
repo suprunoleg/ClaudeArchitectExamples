@@ -28,11 +28,28 @@ from claude_agent_sdk import (
 # SDK pattern to force a subagent to return structured data is to give it a 
 # required tool that matches your desired schema.
 
-@tool
+@tool(
+    name="submit_research_findings",
+    description="Use this tool to submit your final structured research findings.",
+    input_schema={
+        "type": "object",
+        "properties": {
+            "research_topic": {"type": "string"},
+            "facts": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "claim": {"type": "string"},
+                        "citation": {"type": "string"}
+                    }
+                }
+            }
+        },
+        "required": ["research_topic", "facts"]
+    }
+)
 def submit_research_findings(research_topic: str, facts: list[dict]) -> str:
-    """Use this tool to submit your final structured research findings.
-    Facts should be a list of dicts with 'claim' and 'citation' keys.
-    """
     return "Findings submitted successfully! You may now stop."
 
 # ==============================================================================
@@ -104,15 +121,7 @@ async def run_coordinator(user_request: str):
             prompt=user_request, 
             options=options
         ):
-            if msg.type == "assistant":
-                pass
-            elif msg.type == "tool_use":
-                print(f"[SDK ROUTING] 📞 Delegating via Tool: {msg.tool_name} with args: {msg.tool_input}")
-            elif msg.type == "tool_result":
-                print(f"[SDK RESULT] 📥 Subagent completed task. Sending data back to Coordinator.")
-            elif msg.type == "notification":
-                print(f"⚙️  {msg.message}")
-            elif isinstance(msg, ResultMessage):
+            if isinstance(msg, ResultMessage):
                 print(f"\n[COORDINATOR FINAL RESULT] 📥 Extracting Pydantic Object...")
                 if msg.structured_output:
                     # Parse the raw dictionary back into a fully-typed Pydantic object
@@ -121,6 +130,16 @@ async def run_coordinator(user_request: str):
                     print(f"\n✅ Key Differences:")
                     for diff in result.key_differences:
                         print(f"  - {diff}")
+            else:
+                m_type = getattr(msg, "type", None)
+                if m_type == "assistant":
+                    pass
+                elif m_type == "tool_use":
+                    print(f"[SDK ROUTING] 📞 Delegating via Tool: {getattr(msg, 'tool_name', 'tool')} with args: {getattr(msg, 'tool_input', {})}")
+                elif m_type == "tool_result":
+                    print(f"[SDK RESULT] 📥 Subagent completed task. Sending data back to Coordinator.")
+                elif m_type == "notification":
+                    print(f"⚙️  {getattr(msg, 'message', '')}")
     except Exception as e:
         print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
 
