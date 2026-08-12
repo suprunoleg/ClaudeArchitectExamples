@@ -100,5 +100,5 @@ python quickstart_test.py
 python Labeling/stratified_sampling_example.py
 
 # Run a complex Multi-Agent workflow
-python MultiAgent/large_scale_workflow_orchestration_example.py
+python MultiAgent/Orchestration/large_scale_workflow_orchestration_example.py
 ```
