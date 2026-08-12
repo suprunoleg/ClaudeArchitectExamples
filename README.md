@@ -64,7 +64,13 @@ pip install -r requirements.txt
 
 ---
 
-## 4. Deactivate Virtual Environment
+## 4. Environment Configuration
+
+To run the examples, copy `.env.example` to a new `.env` file and set your `ANTHROPIC_API_KEY`.
+
+---
+
+## 5. Deactivate Virtual Environment
 
 When you are done working, deactivate the environment by running:
 
@@ -74,7 +80,7 @@ deactivate
 
 ---
 
-## 5. Running the Examples
+## 6. Running the Examples
 
 This repository is designed as a collection of **fully self-contained, end-to-end runnable examples**. You do not need to stitch snippets together—every single `.py` file is a complete program!
 

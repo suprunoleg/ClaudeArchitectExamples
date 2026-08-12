@@ -3,3 +3,4 @@ claude-agent-sdk
 langchain-anthropic
 langgraph
 pydantic
+python-dotenv
