@@ -11,6 +11,7 @@ import os
 import json
 import asyncio
 from datetime import datetime
+from dotenv import load_dotenv
 from claude_agent_sdk import (
     ClaudeSDKClient,
     ClaudeAgentOptions,
@@ -24,6 +25,10 @@ from claude_agent_sdk import (
     create_sdk_mcp_server
 )
 
+load_dotenv()
+
+if "ANTHROPIC_API_KEY" not in os.environ:
+    os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
 # ==============================================================================
 # 1. DEFINE TOOLS
 # ==============================================================================
@@ -158,22 +163,21 @@ async def run_agent_loop(user_prompt: str):
     try:
         await client.query(user_prompt)
         async for msg in client.receive_messages():
-            if msg.type == "assistant":
+            msg_type = getattr(msg, "type", None)
+            if msg_type == "assistant":
                 print(f"[CLAUDE MESSAGE]: {msg.content}")
-            elif msg.type == "tool_use":
+            elif msg_type == "tool_use":
                 print(f"[SDK RUNNING TOOL]: {msg.tool_name} with args: {msg.tool_input}")
-            elif msg.type == "tool_result":
+            elif msg_type == "tool_result":
                 print(f"[SDK TOOL RESULT TO CLAUDE]: {msg.content}")
-            elif msg.type == "notification":
-                print(f"\n🖥️  [SYSTEM UI NOTIFICATION]: {msg.message}\n")
+            elif msg_type == "notification":
+                print(f"\n  [SYSTEM UI NOTIFICATION]: {msg.message}\n")
     except Exception as e:
         print(f"[SYSTEM] Encountered expected runtime error: {e}")
     finally:
         await client.disconnect()
 
 if __name__ == "__main__":
-    if "ANTHROPIC_API_KEY" not in os.environ:
-        os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
         
     # Trigger PostToolUse hook on fetch_user_data
     asyncio.run(run_agent_loop("Fetch user data for user 1 and tell me their password hash."))

@@ -8,6 +8,7 @@ between agents.
 """
 
 import os
+from dotenv import load_dotenv
 from typing import TypedDict
 from pydantic import BaseModel, Field
 
@@ -18,6 +19,10 @@ from langgraph.graph import StateGraph, START, END
 # Constants
 DEFAULT_MODEL = "claude-haiku-4-5"
 
+# Load environment variables
+load_dotenv()
+if "ANTHROPIC_API_KEY" not in os.environ:
+    os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
 
 # ==============================================================================
 # LANGGRAPH MULTI-AGENT DETERMINISTIC WORKFLOW
@@ -198,12 +203,6 @@ def build_and_run_graph(topic: str):
             print(f"\n[SYSTEM] ❌ Failed to generate PDF: {e}")
 
 if __name__ == "__main__":
-    from dotenv import load_dotenv
-    load_dotenv()
-    
-    if "ANTHROPIC_API_KEY" not in os.environ:
-        print("WARNING: Using dummy API key. Calls will fail, but the architecture is visible.")
-        os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
         
     request = "The architectural evolution of AI Transformers (2017-2024)"
     build_and_run_graph(request)

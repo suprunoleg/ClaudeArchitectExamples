@@ -18,6 +18,12 @@ load_dotenv()
 # Constants
 DEFAULT_MODEL = "claude-haiku-4-5"
 
+# Load environment variables
+load_dotenv()
+if "ANTHROPIC_API_KEY" not in os.environ:
+    os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
+
+
 # ==============================================================================
 # STRUCTURED OUTPUT FORMAT EXAMPLE
 # ==============================================================================
@@ -78,9 +84,6 @@ async def main():
                 print("No structured output was returned!")
 
 if __name__ == "__main__":
-    if "ANTHROPIC_API_KEY" not in os.environ:
-        print("WARNING: Using dummy API key. Calls will fail, but the architecture is visible.")
-        os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
         
     try:
         asyncio.run(main())

@@ -8,6 +8,7 @@ the model.
 """
 
 import os
+from dotenv import load_dotenv
 import json
 from pydantic import BaseModel, Field
 from anthropic import Anthropic
@@ -15,6 +16,10 @@ from anthropic import Anthropic
 # Constants
 DEFAULT_MODEL = "claude-haiku-4-5"
 
+# Load environment variables
+load_dotenv()
+if "ANTHROPIC_API_KEY" not in os.environ:
+    os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
 
 # ==============================================================================
 # RAW API MULTI-AGENT SYSTEM with .PARSE() STRUCTURED OUTPUT
@@ -174,9 +179,6 @@ def run_deterministic_workflow(user_request: str):
         print()
 
 if __name__ == "__main__":
-    if "ANTHROPIC_API_KEY" not in os.environ:
-        print("WARNING: Using dummy API key. Calls will fail, but the architecture is visible.")
-        os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
         
     request = "Research the architectural evolution of AI Transformers (2017-2024) and build a structured report."
     run_deterministic_workflow(request)

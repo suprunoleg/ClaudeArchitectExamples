@@ -10,9 +10,17 @@ tandem.
 import os
 import asyncio
 from pydantic import BaseModel, Field
+from dotenv import load_dotenv
 
 # Constants
 DEFAULT_MODEL = "claude-haiku-4-5"
+
+# Load environment variables
+
+load_dotenv()
+if "ANTHROPIC_API_KEY" not in os.environ:
+    os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
+
 from claude_agent_sdk import (
     query,
     ClaudeAgentOptions,
@@ -91,7 +99,7 @@ class FinalRecommendation(BaseModel):
 # 4. RUN THE COORDINATOR AGENT
 # ==============================================================================
 async def run_coordinator(user_request: str):
-    print(f"\n{'='*70}\n[COORDINATOR] 🧠 Received Request: '{user_request}'\n{'='*70}")
+    print(f"\n{'='*70}\n[COORDINATOR] Received Request: '{user_request}'\n{'='*70}")
     
     # We configure the main Coordinator agent by passing the subagents into its options.
     # We also use the native 'output_format' property with our Pydantic schema to guarantee 
@@ -122,12 +130,12 @@ async def run_coordinator(user_request: str):
             options=options
         ):
             if isinstance(msg, ResultMessage):
-                print(f"\n[COORDINATOR FINAL RESULT] 📥 Extracting Pydantic Object...")
+                print(f"\n[COORDINATOR FINAL RESULT] Extracting Pydantic Object...")
                 if msg.structured_output:
                     # Parse the raw dictionary back into a fully-typed Pydantic object
                     result = FinalRecommendation.model_validate(msg.structured_output)
-                    print(f"\n✅ Final Recommendation:\n{result.final_recommendation}")
-                    print(f"\n✅ Key Differences:")
+                    print(f"\n Final Recommendation:\n{result.final_recommendation}")
+                    print(f"\n Key Differences:")
                     for diff in result.key_differences:
                         print(f"  - {diff}")
             else:
@@ -135,18 +143,15 @@ async def run_coordinator(user_request: str):
                 if m_type == "assistant":
                     pass
                 elif m_type == "tool_use":
-                    print(f"[SDK ROUTING] 📞 Delegating via Tool: {getattr(msg, 'tool_name', 'tool')} with args: {getattr(msg, 'tool_input', {})}")
+                    print(f"[SDK ROUTING] Delegating via Tool: {getattr(msg, 'tool_name', 'tool')} with args: {getattr(msg, 'tool_input', {})}")
                 elif m_type == "tool_result":
-                    print(f"[SDK RESULT] 📥 Subagent completed task. Sending data back to Coordinator.")
+                    print(f"[SDK RESULT] Subagent completed task. Sending data back to Coordinator.")
                 elif m_type == "notification":
-                    print(f"⚙️  {getattr(msg, 'message', '')}")
+                    print(f"  {getattr(msg, 'message', '')}")
     except Exception as e:
         print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
 
 if __name__ == "__main__":
-    if "ANTHROPIC_API_KEY" not in os.environ:
-        print("WARNING: Using dummy API key. Calls will fail, but the architecture is visible.")
-        os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
         
     request = "Research the architectural differences between React and Vue, then synthesize a final recommendation for a small startup as an executive summary."
     asyncio.run(run_coordinator(request))

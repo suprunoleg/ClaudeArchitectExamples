@@ -1,4 +1,4 @@
-﻿"""
+"""
 Nested Structured Output
 
 Demonstrates how to use the Anthropic API to generate complex, deeply nested
@@ -11,9 +11,16 @@ import os
 import json
 from pydantic import BaseModel, Field
 from anthropic import Anthropic
+from dotenv import load_dotenv
 
 # Constants
 DEFAULT_MODEL = "claude-haiku-4-5"
+
+# Load environment variables
+load_dotenv()
+if "ANTHROPIC_API_KEY" not in os.environ:
+    os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
+
 
 
 # ==============================================================================
@@ -91,9 +98,6 @@ def generate_nested_report(topic: str):
         print("Model failed to call the required tool.")
 
 if __name__ == "__main__":
-    if "ANTHROPIC_API_KEY" not in os.environ:
-        print("WARNING: Using dummy API key. Calls will fail, but the architecture is visible.")
-        os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
         
     request = "The architectural evolution of AI Transformers (2017-2024)"
     generate_nested_report(request)

@@ -70,3 +70,13 @@ The core purpose of this project is to provide complete, end-to-end working exam
 3. **Ready to Learn:** The code must serve as a comprehensive learning resource. Even if the user doesn't run the script, the entire flow (from setup to execution) must be evident.
 4. **Short & Concise:** Keep the example as brief as possible while still being a complete, end-to-end integration.
 5. **Use Claude 4.5 Haiku:** ALWAYS use the model string `claude-haiku-4-5` as the default model via a `DEFAULT_MODEL` constant in all API and SDK calls.
+6. **Standardized Environment Loading:** All scripts MUST structure environment loading directly below the `DEFAULT_MODEL` constant as follows:
+   ```python
+   # Constants
+   DEFAULT_MODEL = "claude-haiku-4-5"
+   
+   # Load environment variables
+   load_dotenv()
+   if "ANTHROPIC_API_KEY" not in os.environ:
+       os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
+   ```
