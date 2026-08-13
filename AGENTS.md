@@ -80,3 +80,14 @@ The core purpose of this project is to provide complete, end-to-end working exam
    if "ANTHROPIC_API_KEY" not in os.environ:
        os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
    ```
+
+---
+
+## 5. Official Exam Guide Path Rules
+
+For any agent generating or modifying canonical examples within the `OfficialExamGuide/` directory, you MUST adhere to a **deterministic, code-first orchestration** paradigm:
+
+1. **Deterministic Orchestration**: Do not rely on natural language system prompts to drive core pipeline logic (e.g., routing, looping, or dynamic decomposition).
+2. **Programmatic Control Flow**: Use standard Python constructs (`asyncio.gather`, `while`/`for` loops, `try/except`) for multi-agent workflows. 
+3. **Structured Outputs**: When the model must make a control flow decision (like analyzing intent or evaluating coverage gaps), strictly use structured outputs (e.g., Pydantic models like `RoutingDecision` or `EvaluatorAssessment`) to enforce type-safety and predictability.
+4. **Isolated Context & Observability**: Avoid implicitly leaking state. Route messages programmatically using explicit envelopes or trace IDs.

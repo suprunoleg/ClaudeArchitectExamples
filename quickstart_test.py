@@ -16,21 +16,22 @@ DEFAULT_MODEL = "claude-haiku-4-5"
 
 # Load environment variables
 load_dotenv()
-if "ANTHROPIC_API_KEY" not in os.environ:
-    os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
+# if "ANTHROPIC_API_KEY" not in os.environ:
+#     os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
+
+# print("Initializing Anthropic client...")
 
 
+# client = Anthropic(
+#     api_key=os.environ.get("ANTHROPIC_API_KEY"),
+# )
 
-# Load the environment variables from .env
-load_dotenv()
-
-print("Initializing Anthropic client...")
 client = Anthropic(
-    # This is the default and can be omitted, but shown here for clarity
-    api_key=os.environ.get("ANTHROPIC_API_KEY"),
+  api_key=os.environ["LITE_LLM_KEY"],
+  base_url="http://localhost:4000"
 )
 
-print("Sending test message to claude-sonnet-4-5...")
+print("Sending test message to claude-haiku-4-5...")
 try:
     message = client.messages.create(
         model=DEFAULT_MODEL,
