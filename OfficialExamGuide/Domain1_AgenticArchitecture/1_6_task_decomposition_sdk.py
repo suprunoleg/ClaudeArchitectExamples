@@ -34,12 +34,6 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 # ==============================================================================
 
 async def run_fixed_chain_sdk(raw_document: str):
-    print("\n--- Starting Fixed Prompt Chain ---")
-    # EXAM SKILL: Partitioning context. Notice how step 2 ONLY receives the output of step 1, 
-    # not the original massive raw_document. This prevents context pollution.
-    
-    # Step 1: Extract
-    print("Step 1: Extracting...")
     extract_opts = ClaudeAgentOptions(
         model=DEFAULT_MODEL,
         system_prompt="You are an Extractor. Extract only the action items from the text. Return bullet points."
@@ -48,8 +42,6 @@ async def run_fixed_chain_sdk(raw_document: str):
     async for msg in query(prompt=raw_document, options=extract_opts):
         if isinstance(msg, ResultMessage): extracted = msg.result
             
-    # Step 2: Translate
-    print("Step 2: Translating...")
     translate_opts = ClaudeAgentOptions(
         model=DEFAULT_MODEL,
         system_prompt="You are a Translator. Translate the following action items into Spanish."
@@ -66,16 +58,11 @@ async def run_fixed_chain_sdk(raw_document: str):
 # Best for: Ambiguous user requests that require on-the-fly planning
 # ==============================================================================
 
-# EXAM SKILL: Using structured outputs to determine the sequence of operations on the fly
 class DecompositionPlan(BaseModel):
     steps: List[str] = Field(description="The sequential steps required to solve the user's request.")
     requires_search: bool = Field(description="Whether web search is required for any step.")
 
 async def run_dynamic_decomposition_sdk(user_request: str):
-    print("\n--- Starting Dynamic Decomposition ---")
-    
-    # Step 1: The Planner (Structured Output)
-    print("Step 1: Dynamically planning the workflow...")
     planner_opts = ClaudeAgentOptions(
         model=DEFAULT_MODEL,
         system_prompt="You are a Planner. Break the user's request into a logical sequence of steps.",
@@ -88,17 +75,13 @@ async def run_dynamic_decomposition_sdk(user_request: str):
             
     if not plan: return "Failed to generate plan."
     
-    print(f"Generated Plan: {plan.steps}")
-    
     # ANTI-TOKEN-HOG RULE: Limit dynamic loops
     safe_steps = plan.steps[:2]
-    print(f"Executing first {len(safe_steps)} steps to conserve tokens...")
     
     # Step 2: Execution Engine
     # Notice we pass the context of previous steps into the next step dynamically
     context_accumulator = ""
     for idx, step in enumerate(safe_steps):
-        print(f"Executing Step {idx+1}: {step}")
         executor_opts = ClaudeAgentOptions(
             model=DEFAULT_MODEL,
             system_prompt="Execute the current step given the context of previous steps."
@@ -115,15 +98,10 @@ async def run_dynamic_decomposition_sdk(user_request: str):
 # ==============================================================================
 
 if __name__ == "__main__":
-    try:
-        # Run Fixed Chain
-        doc = "Meeting notes: John needs to fix the server by Tuesday. Sarah will email the client."
-        res_fixed = asyncio.run(run_fixed_chain_sdk(doc))
-        print(f"\n[Fixed Chain Result]\n{res_fixed}")
-        
-        # Run Dynamic
-        req = "I need to know the capital of France, and then I need a poem about that city's most famous landmark."
-        res_dynamic = asyncio.run(run_dynamic_decomposition_sdk(req))
-        print(f"\n[Dynamic Result]\n{res_dynamic}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    # Run Fixed Chain
+    doc = "Meeting notes: John needs to fix the server by Tuesday. Sarah will email the client."
+    res_fixed = asyncio.run(run_fixed_chain_sdk(doc))
+    
+    # Run Dynamic
+    req = "I need to know the capital of France, and then I need a poem about that city's most famous landmark."
+    res_dynamic = asyncio.run(run_dynamic_decomposition_sdk(req))

@@ -32,7 +32,6 @@ def get_server_status(region: str) -> str:
     """A simple tool implementation."""
     return f"The server in {region} is currently ONLINE and operating at 42% capacity."
 
-# EXAM SKILL: Model-driven decision-making. 
 # We define tools, but Claude decides IF and WHEN to use them based on context.
 TOOLS = [
     {
@@ -52,7 +51,6 @@ def run_agentic_loop(prompt: str):
     # Initialize the conversation history
     messages = [{"role": "user", "content": prompt}]
     
-    # EXAM SKILL: Agentic loop control flow.
     # The loop runs indefinitely until a specific stop_reason is encountered.
     # We avoid the anti-pattern of using an arbitrary iteration cap (e.g., `for i in range(5)`) as the primary stopping mechanism.
     while True:
@@ -69,12 +67,10 @@ def run_agentic_loop(prompt: str):
             messages.append({"role": "assistant", "content": response.content})
             
             # 3. Inspect stop_reason
-            # EXAM SKILL: Terminating strictly when stop_reason is "end_turn".
             # We avoid the anti-pattern of parsing natural language (e.g., checking if text contains "I am done").
             if response.stop_reason == "end_turn":
                 break
                 
-            # EXAM SKILL: Continuing loop when stop_reason is "tool_use".
             elif response.stop_reason == "tool_use":
                 
                 # 4. Execute requested tools and gather results
@@ -88,14 +84,12 @@ def run_agentic_loop(prompt: str):
                             # Execute the tool
                             result = get_server_status(tool_input["region"])
                             
-                            # EXAM SKILL: Formatting tool results properly
                             tool_results.append({
                                 "type": "tool_result",
                                 "tool_use_id": content_block.id,
                                 "content": result
                             })
                 
-                # EXAM SKILL: Appending tool results to conversation context for the next iteration
                 messages.append({"role": "user", "content": tool_results})
             
             # Handle other stop reasons gracefully (e.g., max_tokens)
@@ -106,7 +100,6 @@ def run_agentic_loop(prompt: str):
             # Handle API errors (expected when using dummy_key)
             break
             
-    print("\n=== FINAL CONVERSATION STATE ===")
     pprint.pprint(messages, indent=2)
 
 if __name__ == "__main__":

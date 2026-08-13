@@ -80,8 +80,6 @@ User Query: "{user_query}"
     async def execute_query(self, user_query: str) -> str:
         # Step 1: Dynamic classification and routing decision
         decision = await self.analyze_and_route(user_query)
-        print(f"Routing Reasoning: {decision.reasoning}")
-        print(f"Active Pipeline Subagents: {decision.selected_subagents}")
 
         # Step 2: Invoke ONLY the required subagents in parallel
         tasks = []
@@ -108,14 +106,8 @@ User Query: "{user_query}"
 
 async def main():
     coordinator = DynamicCoordinator()
-
-    print("=== Example 1: Targeted Query (Docs Only) ===")
     res1 = await coordinator.execute_query("What is our remote work security policy?")
-    print(f"Final Answer: {res1}\n")
-
-    print("=== Example 2: Multi-Stage Query (SQL + Code) ===")
     res2 = await coordinator.execute_query("Get Q3 sales revenue and calculate standard deviation.")
-    print(f"Final Answer: {res2}")
 
 if __name__ == "__main__":
     asyncio.run(main())

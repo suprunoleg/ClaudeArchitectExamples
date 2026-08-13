@@ -34,7 +34,6 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 # STRUCTURED OUTPUT SCHEMAS
 # ==============================================================================
 
-# EXAM SKILL: Adding enum values like "unclear" for ambiguous cases
 class DocumentCategory(str, Enum):
     INVOICE = "invoice"
     CONTRACT = "contract"
@@ -42,7 +41,6 @@ class DocumentCategory(str, Enum):
     UNCLEAR = "unclear"
     OTHER = "other"
 
-# EXAM SKILL: Schema design considerations: required vs optional (nullable) fields
 class DocumentMetadata(BaseModel):
     category: DocumentCategory = Field(description="The primary category of the document.")
     category_detail: Optional[str] = Field(
@@ -61,7 +59,6 @@ class DocumentMetadata(BaseModel):
     )
 
 async def extract_metadata(document_text: str):
-    # EXAM SKILL: Forcing a specific tool with tool_choice to ensure extraction runs
     options = ClaudeAgentOptions(
         model=DEFAULT_MODEL,
         # The SDK's output_format parameter automatically maps to tool_choice={"type": "tool", "name": "..."}
@@ -73,14 +70,11 @@ async def extract_metadata(document_text: str):
             "name": "extract_metadata" 
         }
     )
-
-    print("Running extraction...")
     async for message in query(
         prompt=f"Extract metadata from this document:\n\n<document>\n{document_text}\n</document>",
         options=options
     ):
         if isinstance(message, ResultMessage):
-            # EXAM SKILL: Extracting structured data from the tool_use response
             if message.structured_output:
                 # Validate the raw dictionary output back into our strict Pydantic model
                 metadata = DocumentMetadata.model_validate(message.structured_output)
@@ -90,13 +84,4 @@ async def extract_metadata(document_text: str):
 
 if __name__ == "__main__":
     test_doc = "This memo is between Acme Corp and Globex. It is a quick reminder about the merger."
-    
-    try:
-        result = asyncio.run(extract_metadata(test_doc))
-        print("\n=== STRUCTURED OUTPUT ===")
-        print(f"Title: {result.document_title}")
-        print(f"Category: {result.category.value}")
-        print(f"Entities: {result.entities_involved}")
-        print(f"Amount: {result.total_amount}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    result = asyncio.run(extract_metadata(test_doc))

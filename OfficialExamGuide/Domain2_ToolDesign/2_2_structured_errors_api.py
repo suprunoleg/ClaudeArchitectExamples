@@ -30,12 +30,10 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 client = AsyncAnthropic()
 
 # ==============================================================================
-# EXAM SKILL: Structured Error Responses
 # ==============================================================================
 
 def good_read_file(filepath: str) -> dict:
     if not os.path.exists(filepath):
-        # EXAM SKILL: Returning is_error=True with actionable feedback
         # In the raw Anthropic API, this translates to setting is_error=True in the tool_result block
         return {
             "is_error": True,
@@ -68,7 +66,6 @@ TOOL_SCHEMA = {
 # ==============================================================================
 
 async def run_structured_error_api(user_request: str):
-    print("\n--- Starting Deterministic API Error Handling Workflow ---")
     
     system_prompt = "You are an assistant that reads files. If a tool returns an error, try to fix the argument and retry once."
     messages = [{"role": "user", "content": user_request}]
@@ -77,7 +74,6 @@ async def run_structured_error_api(user_request: str):
     max_iterations = 3
     
     for i in range(max_iterations):
-        print(f"--- Turn {i+1} ---")
         try:
             response = await client.messages.create(
                 model=DEFAULT_MODEL,
@@ -87,7 +83,6 @@ async def run_structured_error_api(user_request: str):
                 tools=[TOOL_SCHEMA]
             )
         except Exception as e:
-            print(f"[API Error - expected if dummy key] {e}")
             return "Workflow failed."
             
         messages.append({"role": "assistant", "content": response.content})
@@ -95,7 +90,6 @@ async def run_structured_error_api(user_request: str):
         if response.stop_reason == "tool_use":
             for block in response.content:
                 if block.type == "tool_use":
-                    print(f"[LLM called tool: {block.name}] args: {block.input}")
                     
                     if block.name == "good_read_file":
                         result_dict = good_read_file(**block.input)
@@ -115,7 +109,6 @@ async def run_structured_error_api(user_request: str):
                             "content": f"Unknown tool {block.name}"
                         }
                         
-                    print(f"[Tool Result] (is_error={tool_result_block['is_error']}) {tool_result_block['content']}")
                     messages.append({"role": "user", "content": [tool_result_block]})
         else:
             return next((b.text for b in response.content if b.type == 'text'), "")
@@ -123,9 +116,5 @@ async def run_structured_error_api(user_request: str):
     return "Max iterations reached."
 
 if __name__ == "__main__":
-    try:
-        req = "Read the contents of 'missing_config.json'."
-        res = asyncio.run(run_structured_error_api(req))
-        print(f"\n[Agent Response]\n{res}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    req = "Read the contents of 'missing_config.json'."
+    res = asyncio.run(run_structured_error_api(req))

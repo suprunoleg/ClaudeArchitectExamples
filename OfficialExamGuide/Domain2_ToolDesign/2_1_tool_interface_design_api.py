@@ -30,10 +30,8 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 client = AsyncAnthropic()
 
 # ==============================================================================
-# EXAM SKILL: Enforcing strict typing, enums, and required parameters in JSON schema
 # ==============================================================================
 
-# ❌ ANTI-PATTERN: Poorly Bounded Tool Schema
 BAD_TOOL_SCHEMA = {
     "name": "get_data",
     "description": "Gets data about users or orders.",
@@ -47,7 +45,6 @@ BAD_TOOL_SCHEMA = {
     }
 }
 
-# ✅ BEST PRACTICE: Clear Boundaries and Enums
 GOOD_TOOL_SCHEMA = {
     "name": "get_user_profile",
     "description": (
@@ -82,7 +79,6 @@ def run_get_user_profile(user_id: str, detail_level: str) -> str:
     return f"User {user_id} profile ({detail_level}): Alice, alice@example.com, Tier: Premium"
 
 async def run_tool_design_api(user_request: str):
-    print("\n--- Starting Deterministic API Tool Design Workflow ---")
     
     messages = [{"role": "user", "content": user_request}]
     
@@ -90,7 +86,6 @@ async def run_tool_design_api(user_request: str):
     max_iterations = 2
     
     for i in range(max_iterations):
-        print(f"--- Turn {i+1} ---")
         try:
             # We supply only the GOOD tool schema
             response = await client.messages.create(
@@ -100,7 +95,6 @@ async def run_tool_design_api(user_request: str):
                 tools=[GOOD_TOOL_SCHEMA]
             )
         except Exception as e:
-            print(f"[API Error - expected if dummy key] {e}")
             return "Workflow failed."
             
         messages.append({"role": "assistant", "content": response.content})
@@ -108,14 +102,12 @@ async def run_tool_design_api(user_request: str):
         if response.stop_reason == "tool_use":
             for block in response.content:
                 if block.type == "tool_use":
-                    print(f"[LLM called tool: {block.name}] args: {block.input}")
                     
                     if block.name == "get_user_profile":
                         res = run_get_user_profile(**block.input)
                     else:
                         res = f"Unknown tool {block.name}"
                         
-                    print(f"[Tool Result] {res}")
                     messages.append({
                         "role": "user",
                         "content": [{"type": "tool_result", "tool_use_id": block.id, "content": res}]
@@ -126,9 +118,5 @@ async def run_tool_design_api(user_request: str):
     return "Max iterations reached."
 
 if __name__ == "__main__":
-    try:
-        req = "Can you look up the full profile for user U-999?"
-        res = asyncio.run(run_tool_design_api(req))
-        print(f"\n[Agent Response]\n{res}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    req = "Can you look up the full profile for user U-999?"
+    res = asyncio.run(run_tool_design_api(req))

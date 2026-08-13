@@ -38,7 +38,6 @@ client = AsyncAnthropic()
 # ==============================================================================
 # STRUCTURED OUTPUTS (Enforcing Deterministic Control Flow)
 # ==============================================================================
-# EXAM SKILL: We use Pydantic schemas instead of probabilistic system prompts 
 # to enforce strict types and deterministic routing decisions in the pipeline.
 
 class RoutingDecision(BaseModel):
@@ -72,7 +71,6 @@ class BaseSubAgent:
         """Subagents ONLY accept envelopes from the coordinator and return envelopes to it."""
         task_data = envelope.payload.get("data", "")
         
-        # EXAM SKILL: Subagents operate with isolated context. 
         # They do not automatically inherit the coordinator's history.
         # (Using a simulated async delay to represent the subagent's actual LLM generation)
         await asyncio.sleep(0.5) 
@@ -178,7 +176,6 @@ class DeterministicCoordinator:
         if "searcher" not in decision.selected_subagents:
             return "No search required."
 
-        # Step 2: EXAM SKILL: Iterative refinement loops
         max_iterations = 2
         current_context = ""
         
@@ -204,7 +201,6 @@ class DeterministicCoordinator:
             logging.info(f"[Coordinator] Dispatching targeted queries: {assessment.followup_queries[:2]}")
             
             # Re-delegate missing topics (using parallel execution to save time)
-            # EXAM SKILL: Parallel execution for multiple gaps
             tasks = [self.route_message("searcher", q, trace_id) for q in assessment.followup_queries[:2]]
             new_findings = await asyncio.gather(*tasks)
             
@@ -214,7 +210,3 @@ class DeterministicCoordinator:
 if __name__ == "__main__":
     coordinator = DeterministicCoordinator()
     result = asyncio.run(coordinator.execute_query("Research AI impact on art"))
-    
-    # High-value print statement to prove state changed
-    print("\n=== FINAL RESULT ===")
-    print(result)

@@ -27,10 +27,8 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 
 
 # ==============================================================================
-# EXAM SKILL: Structured Error Responses
 # ==============================================================================
 
-# ❌ ANTI-PATTERN: System Crash or Vague Exception
 @tool("bad_read_file", "Reads a file.", {"filepath": str})
 async def bad_read_file(args):
     filepath = args.get("filepath")
@@ -40,13 +38,11 @@ async def bad_read_file(args):
         return {"content": [{"type": "text", "text": f.read()}]}
 
 
-# ✅ BEST PRACTICE: Graceful MCP Error with Actionable Feedback
 @tool("good_read_file", "Reads a file from the workspace.", {"filepath": str})
 async def good_read_file(args):
     filepath = args.get("filepath")
     
     if not os.path.exists(filepath):
-        # EXAM SKILL: Returning isError=True with actionable feedback
         return {
             "isError": True, 
             "content": [{
@@ -70,7 +66,6 @@ async def good_read_file(args):
 # ==============================================================================
 
 async def run_structured_error_sdk(user_request: str):
-    print("\n--- Starting SDK Error Handling Workflow ---")
     
     options = ClaudeAgentOptions(
         model=DEFAULT_MODEL,
@@ -90,9 +85,5 @@ async def run_structured_error_sdk(user_request: str):
         pass
 
 if __name__ == "__main__":
-    try:
-        req = "Read the contents of 'missing_config.json'."
-        res = asyncio.run(run_structured_error_sdk(req))
-        print(f"\n[Agent Response]\n{res}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    req = "Read the contents of 'missing_config.json'."
+    res = asyncio.run(run_structured_error_sdk(req))

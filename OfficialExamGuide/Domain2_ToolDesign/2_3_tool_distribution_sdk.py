@@ -44,17 +44,13 @@ async def submit_final_report(args):
 
 
 # ==============================================================================
-# EXAM SKILL: Principle of Least Privilege / Tool Distribution
 # ==============================================================================
 
-# ❌ ANTI-PATTERN: Giving the researcher the ability to write files or submit reports.
 # If the researcher hallucinated, it could overwrite critical files.
 
-# ✅ BEST PRACTICE: Highly bounded subagent
 researcher_agent = AgentDefinition(
     description="A researcher that only searches the web.",
     prompt="You are a researcher. Use the web_search tool to find information.",
-    # EXAM SKILL: Distributing tools appropriately (Least Privilege)
     tools=["web_search"],
     disallowedTools=["Task", "write_file", "submit_final_report"] 
 )
@@ -64,14 +60,12 @@ researcher_agent = AgentDefinition(
 # ==============================================================================
 
 async def run_tool_distribution_sdk(user_request: str):
-    print("\n--- Starting SDK Tool Distribution Workflow ---")
     
     # Coordinator has access to subagents and the final report tool
     options = ClaudeAgentOptions(
         model=DEFAULT_MODEL,
         system_prompt="You are the Coordinator. Delegate research, then submit the final report.",
         allowed_tools=["Task", "submit_final_report"],
-        # EXAM SKILL: Configuring tool choice to force an action
         # If we wanted to FORCE the model to immediately use a tool without chatting,
         # we could use: tool_choice={"type": "any"} or {"type": "tool", "name": "submit_final_report"}
         # Note: claude_agent_sdk abstracts this via `response_schema` or raw tool config.
@@ -87,9 +81,5 @@ async def run_tool_distribution_sdk(user_request: str):
         pass
 
 if __name__ == "__main__":
-    try:
-        req = "Research Quantum Computing and submit a report."
-        res = asyncio.run(run_tool_distribution_sdk(req))
-        print(f"\n[Agent Response]\n{res}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    req = "Research Quantum Computing and submit a report."
+    res = asyncio.run(run_tool_distribution_sdk(req))

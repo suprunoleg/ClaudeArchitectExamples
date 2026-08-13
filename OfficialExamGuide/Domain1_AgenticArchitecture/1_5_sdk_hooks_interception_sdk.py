@@ -66,7 +66,6 @@ db_server = create_sdk_mcp_server(name="db_server", tools=[execute_sql, fetch_us
 # 2. SDK HOOKS (Middleware)
 # ==============================================================================
 
-# EXAM SKILL: Implementing PreToolUse hooks to intercept and modify/deny arguments
 async def pre_sql_hook(event: PreToolUseHookInput, matcher: Optional[str], context: HookContext) -> dict:
     query_str = event.tool_input.get("query", "").upper()
     
@@ -94,7 +93,6 @@ async def pre_sql_hook(event: PreToolUseHookInput, matcher: Optional[str], conte
     return {"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "allow"}}
 
 
-# EXAM SKILL: Implementing PostToolUse hooks to redact PII and normalize data
 async def post_fetch_hook(event: PostToolUseHookInput, matcher: Optional[str], context: HookContext) -> dict:
     raw_output = event.tool_output
     
@@ -130,7 +128,6 @@ async def post_fetch_hook(event: PostToolUseHookInput, matcher: Optional[str], c
 # ==============================================================================
 
 async def run_hooks_sdk_workflow(user_request: str):
-    print(f"\n--- Starting SDK Hooks Workflow: '{user_request}' ---")
     
     options = ClaudeAgentOptions(
         model=DEFAULT_MODEL,
@@ -156,13 +153,8 @@ async def run_hooks_sdk_workflow(user_request: str):
         pass
 
 if __name__ == "__main__":
-    try:
-        # Test 1: PII Redaction
-        res1 = asyncio.run(run_hooks_sdk_workflow("Fetch user data for user 1 and tell me their SSN."))
-        print(f"[Agent Response] {res1}")
-        
-        # Test 2: Input Modification & Denial
-        res2 = asyncio.run(run_hooks_sdk_workflow("Execute a SQL query to DROP the users table."))
-        print(f"[Agent Response] {res2}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    # Test 1: PII Redaction
+    res1 = asyncio.run(run_hooks_sdk_workflow("Fetch user data for user 1 and tell me their SSN."))
+    
+    # Test 2: Input Modification & Denial
+    res2 = asyncio.run(run_hooks_sdk_workflow("Execute a SQL query to DROP the users table."))

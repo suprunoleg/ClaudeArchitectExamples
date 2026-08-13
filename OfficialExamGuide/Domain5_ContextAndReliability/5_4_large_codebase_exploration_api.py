@@ -30,7 +30,6 @@ client = AsyncAnthropic()
 
 
 # ==============================================================================
-# EXAM SKILL: Targeted Exploration Tools
 # ==============================================================================
 
 def get_function_signature(file_path: str, func_name: str) -> str:
@@ -57,7 +56,6 @@ TOOLS = [
 # ==============================================================================
 
 async def run_codebase_exploration_api(user_request: str):
-    print(f"\n--- Starting Deterministic API Large Codebase Exploration Workflow ---")
     
     system_prompt = (
         "You are a code explorer. You must find how to use the 'authenticate' function. "
@@ -77,7 +75,6 @@ async def run_codebase_exploration_api(user_request: str):
                 tools=TOOLS
             )
         except Exception as e:
-            print(f"[API Error - expected if dummy key] {e}")
             return "Workflow failed."
             
         messages.append({"role": "assistant", "content": response.content})
@@ -85,7 +82,6 @@ async def run_codebase_exploration_api(user_request: str):
         if response.stop_reason == "tool_use":
             for block in response.content:
                 if block.type == "tool_use" and block.name == "get_function_signature":
-                    print(f"[LLM called get_function_signature]: {block.input}")
                     res = get_function_signature(**block.input)
                     messages.append({
                         "role": "user",
@@ -97,9 +93,5 @@ async def run_codebase_exploration_api(user_request: str):
     return "Max iterations reached."
 
 if __name__ == "__main__":
-    try:
-        req = "How do I call the authenticate function in core.py?"
-        res = asyncio.run(run_codebase_exploration_api(req))
-        print(f"\n[Agent Response]: {res}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    req = "How do I call the authenticate function in core.py?"
+    res = asyncio.run(run_codebase_exploration_api(req))

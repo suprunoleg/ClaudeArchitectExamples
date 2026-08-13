@@ -85,22 +85,17 @@ async def run_refinement_loop(topic: str, max_iterations: int = 3) -> SynthesisO
     context_bank.append(initial_findings)
     
     for iteration in range(1, max_iterations + 1):
-        print(f"\n--- Refinement Iteration {iteration}/{max_iterations} ---")
         
         # 1. Synthesize current context bank
         current_synthesis = await synthesis_subagent(topic, context_bank)
         
         # 2. Evaluate current synthesis for coverage gaps
         assessment = await evaluator_subagent(topic, current_synthesis)
-        print(f"Coverage Score: {assessment.coverage_score}")
         
         # 3. Check termination criteria
         if assessment.is_sufficient or iteration == max_iterations:
-            print("[Coordinator] Quality threshold met or max iterations reached. Finalizing.")
             return current_synthesis
             
-        print(f"[Coordinator] Gaps identified: {assessment.identified_gaps}")
-        print(f"[Coordinator] Dispatching parallel subagent tasks for queries: {assessment.followup_queries}")
         
         # 4. Re-delegate targeted queries to search subagents in parallel
         tasks = [search_and_analysis_subagent(q) for q in assessment.followup_queries]

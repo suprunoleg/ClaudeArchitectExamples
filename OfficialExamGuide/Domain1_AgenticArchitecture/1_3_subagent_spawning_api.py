@@ -37,7 +37,6 @@ client = AsyncAnthropic()
 # STRUCTURED DATA FORMATS (Context Passing)
 # ==============================================================================
 
-# EXAM SKILL: Using structured data formats to separate content from metadata when passing context
 class SearchFinding(BaseModel):
     subtopic: str = Field(description="The specific subtopic researched.")
     metadata: str = Field(description="Source information (e.g. Wikipedia).")
@@ -53,7 +52,6 @@ class SynthesisRequest(BaseModel):
 
 async def call_model(system_prompt: str, user_prompt: str) -> str:
     """Helper to simulate an isolated subagent API call."""
-    # EXAM SKILL: Subagents operate with isolated context. Notice how we do NOT pass a conversation
     # history array here. The subagent only knows exactly what is passed in `user_prompt`.
     try:
         response = await client.messages.create(
@@ -68,7 +66,6 @@ async def call_model(system_prompt: str, user_prompt: str) -> str:
         return f"[Mock API Response] Data for: {user_prompt[:20]}..."
 
 async def run_spawning_api_workflow(user_request: str):
-    print("--- Starting Deterministic API Task Spawning Workflow ---")
     
     searcher_prompt = "You are the Searcher subagent. Extract raw facts only. Return your output as a short summary."
     synthesizer_prompt = "You are the Synthesizer. You will receive structured data containing findings. Synthesize them into a cohesive summary."
@@ -76,9 +73,6 @@ async def run_spawning_api_workflow(user_request: str):
     # In a real app, this list would be generated dynamically by a routing decision (like in 1.2)
     subtopics = ["Apollo 11", "Voyager 1"]
     
-    print(f"1. Spawning {len(subtopics)} parallel subagents...")
-    
-    # EXAM SKILL: Spawning parallel subagents deterministically.
     # Instead of hoping the model emits multiple "Task" tool calls simultaneously, 
     # we explicitly fan-out using Python's asyncio.gather.
     tasks = [
@@ -88,8 +82,6 @@ async def run_spawning_api_workflow(user_request: str):
     
     # Wait for all parallel agents to finish
     raw_findings = await asyncio.gather(*tasks)
-    
-    print("2. Formatting context into structured data...")
     structured_findings = []
     for topic, finding in zip(subtopics, raw_findings):
         structured_findings.append(SearchFinding(
@@ -102,9 +94,6 @@ async def run_spawning_api_workflow(user_request: str):
         original_goal=user_request,
         findings=structured_findings
     )
-    
-    print("3. Passing structured context to the Synthesizer...")
-    # EXAM SKILL: Including complete findings from prior agents directly in the subagent's prompt
     final_report = await call_model(
         synthesizer_prompt, 
         f"Please synthesize the following data:\n{synthesis_payload.model_dump_json(indent=2)}"
@@ -114,9 +103,4 @@ async def run_spawning_api_workflow(user_request: str):
 
 if __name__ == "__main__":
     request = "Compare the Apollo 11 and Voyager 1 missions."
-    try:
-        result = asyncio.run(run_spawning_api_workflow(request))
-        print("\n=== FINAL SYNTHESIZED REPORT ===")
-        print(result)
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    result = asyncio.run(run_spawning_api_workflow(request))

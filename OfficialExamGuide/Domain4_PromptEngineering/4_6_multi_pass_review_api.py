@@ -47,18 +47,11 @@ async def call_model(system_prompt: str, user_prompt: str) -> str:
 # ==============================================================================
 
 async def run_parallel_ensemble_api(prompt: str):
-    print("\n--- Starting Deterministic API Parallel Ensemble ---")
     
     sys_prompt = "You are a creative brainstorming agent."
-    
-    # EXAM SKILL: Using asyncio.gather for parallel multi-instance execution
-    # ANTI-TOKEN-HOG: Limit to 2 parallel tasks
-    print("Spawning 2 parallel instances...")
     results = await asyncio.gather(*[call_model(sys_prompt, prompt) for _ in range(2)])
-    
-    print("\nAggregated Results:")
     for idx, res in enumerate(results):
-        print(f"Instance {idx+1}: {res[:50]}...")
+        pass
         
     return results
 
@@ -68,17 +61,10 @@ async def run_parallel_ensemble_api(prompt: str):
 # ==============================================================================
 
 async def run_sequential_review_api(draft_text: str):
-    print("\n--- Starting Deterministic API Sequential Multi-Pass Review ---")
-    
-    # Pass 1: The Drafter
-    print("Pass 1: Drafting...")
     draft = await call_model(
         system_prompt="You are a translator. Translate the text to French.", 
         user_prompt=draft_text
     )
-            
-    # Pass 2: The Reviewer (Critiques the draft)
-    print("Pass 2: Reviewing...")
     final_version = await call_model(
         system_prompt="You are a native French speaker. Critique this translation and provide a corrected version.",
         user_prompt=draft
@@ -89,8 +75,5 @@ async def run_sequential_review_api(draft_text: str):
 # ==============================================================================
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(run_parallel_ensemble_api("Give me a name for a new pet dog."))
-        asyncio.run(run_sequential_review_api("The quick brown fox jumps over the lazy dog."))
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    asyncio.run(run_parallel_ensemble_api("Give me a name for a new pet dog."))
+    asyncio.run(run_sequential_review_api("The quick brown fox jumps over the lazy dog."))

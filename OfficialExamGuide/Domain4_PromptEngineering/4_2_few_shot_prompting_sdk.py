@@ -27,7 +27,6 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 
 
 # ==============================================================================
-# EXAM SKILL: Few-Shot Prompting
 # ==============================================================================
 
 # Notice how the examples use XML tags to clearly separate the input from the expected output.
@@ -60,7 +59,6 @@ Follow the exact format from the examples. Do not write any other text.
 """
 
 async def run_few_shot_sdk(messy_text: str):
-    print(f"\n--- Starting SDK Few-Shot Workflow ---")
     
     options = ClaudeAgentOptions(
         model=DEFAULT_MODEL,
@@ -77,11 +75,5 @@ async def run_few_shot_sdk(messy_text: str):
         return "[Mock Response expected if dummy key]"
 
 if __name__ == "__main__":
-    try:
-        req = "Hi! I am David. I'm 22 and based out of New York City."
-        print(f"User Input: {req}")
-        res = asyncio.run(run_few_shot_sdk(req))
-        print(f"[Agent Response -> should match CSV format]:\n{res}")
-        
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    req = "Hi! I am David. I'm 22 and based out of New York City."
+    res = asyncio.run(run_few_shot_sdk(req))

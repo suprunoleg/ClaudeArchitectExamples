@@ -26,9 +26,7 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 client = AsyncAnthropic()
 
 async def run_batch_processing():
-    print("\n--- Starting Batch Processing Workflow ---")
     
-    # EXAM SKILL: When to use the Batch API
     # 1. Processing 10,000 document summaries overnight.
     # 2. Running a massive evaluation suite.
     # Why? It provides a 50% discount but takes up to 24 hours to complete.
@@ -54,13 +52,9 @@ async def run_batch_processing():
     ]
     
     try:
-        # EXAM SKILL: Constructing the Batch Request
-        print("Submitting Batch Request...")
         message_batch = await client.messages.batches.create(
             requests=requests
         )
-        print(f"Batch created successfully. Batch ID: {message_batch.id}")
-        print(f"Processing Status: {message_batch.processing_status}")
         
         # In a real system, you would save `message_batch.id` to a database and poll/webhook for completion later.
         
@@ -72,11 +66,7 @@ async def run_batch_processing():
                 
         return message_batch.id
     except Exception as e:
-        print(f"[API Error - expected if dummy key] {e}")
         return "Failed to submit batch."
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(run_batch_processing())
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    asyncio.run(run_batch_processing())

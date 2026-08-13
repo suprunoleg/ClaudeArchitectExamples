@@ -29,7 +29,6 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 client = AsyncAnthropic()
 
 # ==============================================================================
-# EXAM SKILL: Explicit vs Vague Criteria
 # ==============================================================================
 
 GOOD_PROMPT = """
@@ -48,7 +47,6 @@ ONLY output YES or NO. Do not explain your reasoning.
 """
 
 async def run_explicit_criteria_api(review_text: str):
-    print(f"\n--- Starting Deterministic API Explicit Criteria Workflow ---")
     
     try:
         response = await client.messages.create(
@@ -62,16 +60,8 @@ async def run_explicit_criteria_api(review_text: str):
         return "[Mock Response expected if dummy key]"
 
 if __name__ == "__main__":
-    try:
-        review_1 = "The box was a bit dented when it arrived, which was annoying, but I love the product!"
-        print(f"Review 1: {review_1}")
-        res_1 = asyncio.run(run_explicit_criteria_api(review_1))
-        print(f"[Agent Response -> should be NO]: {res_1}")
-        
-        review_2 = "This is garbage. It arrived shattered into 50 pieces. I already emailed support for a refund."
-        print(f"\nReview 2: {review_2}")
-        res_2 = asyncio.run(run_explicit_criteria_api(review_2))
-        print(f"[Agent Response -> should be YES]: {res_2}")
-        
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    review_1 = "The box was a bit dented when it arrived, which was annoying, but I love the product!"
+    res_1 = asyncio.run(run_explicit_criteria_api(review_1))
+    
+    review_2 = "This is garbage. It arrived shattered into 50 pieces. I already emailed support for a refund."
+    res_2 = asyncio.run(run_explicit_criteria_api(review_2))

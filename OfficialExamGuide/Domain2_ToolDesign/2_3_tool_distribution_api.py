@@ -68,13 +68,6 @@ TOOL_SUBMIT_REPORT = {
 # ==============================================================================
 
 async def run_tool_distribution_api(user_request: str):
-    print("\n--- Starting Deterministic API Tool Distribution Workflow ---")
-    
-    # --------------------------------------------------------------------------
-    # SUBAGENT (Researcher)
-    # EXAM SKILL: Principle of Least Privilege
-    # --------------------------------------------------------------------------
-    print("\n[Phase 1] Calling Researcher Subagent...")
     try:
         research_response = await client.messages.create(
             model=DEFAULT_MODEL,
@@ -87,16 +80,9 @@ async def run_tool_distribution_api(user_request: str):
             # Default is "auto", letting Claude decide if it needs to search
             tool_choice={"type": "auto"} 
         )
-        print("Researcher successfully bounded to only web_search.")
     except Exception as e:
-        print(f"[API Error - expected if dummy key] {e}")
         research_response = None
         
-    # --------------------------------------------------------------------------
-    # COORDINATOR (Forcing a Tool)
-    # EXAM SKILL: Configuring tool_choice to force specific tool execution
-    # --------------------------------------------------------------------------
-    print("\n[Phase 2] Forcing Coordinator to submit report...")
     try:
         report_response = await client.messages.create(
             model=DEFAULT_MODEL,
@@ -104,7 +90,6 @@ async def run_tool_distribution_api(user_request: str):
             system="You are the Coordinator. You MUST submit the report using the tool.",
             messages=[{"role": "user", "content": f"Compile this into a report: 'Quantum computing is fast.'"}],
             tools=[TOOL_SUBMIT_REPORT, TOOL_WRITE_FILE],
-            # EXAM SKILL: Forcing a specific tool
             # {"type": "any"} forces the model to use ANY tool before responding.
             # {"type": "tool", "name": "..."} forces the model to use THAT EXACT tool.
             tool_choice={"type": "tool", "name": "submit_final_report"}
@@ -114,10 +99,9 @@ async def run_tool_distribution_api(user_request: str):
         if report_response.stop_reason == "tool_use":
             tool_block = next((b for b in report_response.content if b.type == 'tool_use'), None)
             if tool_block:
-                print(f"Coordinator successfully forced to use: {tool_block.name}")
                 return "Workflow Complete."
     except Exception as e:
-        print(f"[API Error - expected if dummy key] {e}")
+        pass
         
     return "Workflow complete (simulated)."
 

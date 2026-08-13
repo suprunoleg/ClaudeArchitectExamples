@@ -86,9 +86,6 @@ async def run_deterministic_sdk_workflow(user_request: str):
     router_prompt = "You are the Router. Break the user's request into comprehensive subtopics."
     searcher_prompt = "You are the Searcher. Your job is strictly to search and return raw facts. Do not synthesize."
     synthesizer_prompt = "You are the Synthesizer. Evaluate findings for gaps. Output strict JSON."
-    
-    # 1. EXAM SKILL: Task Decomposition (Partitioning scope to minimize duplication)
-    print("1. Decomposing request...")
     routing: RoutingDecision = await execute_task(
         prompt=f"Decompose this request into distinct research subtopics: {user_request}",
         system_prompt=router_prompt,
@@ -97,10 +94,8 @@ async def run_deterministic_sdk_workflow(user_request: str):
     
     context_bank = []
     
-    # 2. EXAM SKILL: Hub-and-spoke execution with isolated context
     # ANTI-TOKEN-HOG RULE: Limit to 2 parallel subagents maximum
     safe_subtopics = routing.selected_subtopics[:2]
-    print(f"2. Dispatching {len(safe_subtopics)} parallel searches (limited from {len(routing.selected_subtopics)})...")
     tasks = [
         execute_task(f"Find information about: {subtopic}", searcher_prompt) 
         for subtopic in safe_subtopics
@@ -108,11 +103,9 @@ async def run_deterministic_sdk_workflow(user_request: str):
     initial_findings = await asyncio.gather(*tasks)
     context_bank.extend(initial_findings)
     
-    # 3. EXAM SKILL: Iterative refinement loops (evaluating synthesis output for gaps)
     # ANTI-TOKEN-HOG RULE: Strictly limit agentic loops
     max_iterations = 2
     for iteration in range(1, max_iterations + 1):
-        print(f"3. Refinement Iteration {iteration}/{max_iterations}: Synthesizing...")
         context_str = "\n".join(str(f) for f in context_bank)
         synth_input = f"Topic: {user_request}\n\nGathered Context:\n{context_str}"
         
@@ -123,12 +116,10 @@ async def run_deterministic_sdk_workflow(user_request: str):
         )
         
         if synthesis.is_complete or iteration == max_iterations:
-            print("   -> Quality threshold met.")
             return synthesis.final_report
             
         # ANTI-TOKEN-HOG RULE: Limit parallel gap research
         safe_gaps = synthesis.coverage_gaps[:1]
-        print(f"   -> Gaps identified. Dispatching {len(safe_gaps)} parallel gap searches (limited from {len(synthesis.coverage_gaps)})...")
         # Parallel gap research
         gap_tasks = [
             execute_task(f"Find information addressing this gap: {gap}", searcher_prompt) 
@@ -139,9 +130,4 @@ async def run_deterministic_sdk_workflow(user_request: str):
 
 if __name__ == "__main__":
     request = "Research the impact of AI on creative industries."
-    try:
-        result = asyncio.run(run_deterministic_sdk_workflow(request))
-        print("\n=== FINAL SYNTHESIZED REPORT ===")
-        print(result)
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    result = asyncio.run(run_deterministic_sdk_workflow(request))

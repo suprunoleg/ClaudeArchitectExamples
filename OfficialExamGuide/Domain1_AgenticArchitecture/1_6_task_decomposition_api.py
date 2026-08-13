@@ -50,7 +50,6 @@ async def call_model(system_prompt: str, user_prompt: str, tools=None) -> tuple[
         
         return "\n".join(text_blocks), tool_blocks
     except Exception as e:
-        print(f"[Mock API Response - expected if dummy key] {e}")
         return "", []
 
 # ==============================================================================
@@ -58,17 +57,8 @@ async def call_model(system_prompt: str, user_prompt: str, tools=None) -> tuple[
 # ==============================================================================
 
 async def run_fixed_chain_api(raw_document: str):
-    print("\n--- Starting Deterministic API Fixed Prompt Chain ---")
-    
-    # EXAM SKILL: Partitioning context explicitly in Python code.
-    
-    # Step 1: Extract
-    print("Step 1: Extracting...")
     sys_ext = "You are an Extractor. Extract only the action items from the text. Return bullet points."
     extracted, _ = await call_model(sys_ext, raw_document)
-            
-    # Step 2: Translate (Only receives the output of Step 1)
-    print("Step 2: Translating...")
     sys_trans = "You are a Translator. Translate the following action items into Spanish."
     translated, _ = await call_model(sys_trans, extracted)
             
@@ -79,7 +69,6 @@ async def run_fixed_chain_api(raw_document: str):
 # APPROACH B: DYNAMIC DECOMPOSITION
 # ==============================================================================
 
-# EXAM SKILL: Using structured outputs to determine the sequence of operations on the fly
 # Instead of Pydantic + SDK, we use the raw ToolUse API.
 PLANNER_TOOL = {
     "name": "generate_plan",
@@ -98,9 +87,6 @@ PLANNER_TOOL = {
 }
 
 async def run_dynamic_decomposition_api(user_request: str):
-    print("\n--- Starting Deterministic API Dynamic Decomposition ---")
-    
-    print("Step 1: Dynamically planning the workflow...")
     
     sys_plan = "You are a Planner. Break the user's request into a logical sequence of steps. You MUST use the generate_plan tool."
     
@@ -111,15 +97,12 @@ async def run_dynamic_decomposition_api(user_request: str):
         return "Failed to generate plan."
         
     generated_steps = tools_used[0].input.get("steps", [])
-    print(f"Generated Plan: {generated_steps}")
     
     # ANTI-TOKEN-HOG RULE: Limit dynamic loops
     safe_steps = generated_steps[:2]
-    print(f"Executing first {len(safe_steps)} steps to conserve tokens...")
     
     context_accumulator = ""
     for idx, step in enumerate(safe_steps):
-        print(f"Executing Step {idx+1}: {step}")
         sys_exec = "Execute the current step given the context of previous steps."
         step_prompt = f"Previous Context:\n{context_accumulator}\n\nCurrent Step to Execute: {step}"
         
@@ -131,13 +114,8 @@ async def run_dynamic_decomposition_api(user_request: str):
 # ==============================================================================
 
 if __name__ == "__main__":
-    try:
-        doc = "Meeting notes: John needs to fix the server by Tuesday. Sarah will email the client."
-        res_fixed = asyncio.run(run_fixed_chain_api(doc))
-        print(f"\n[Fixed Chain Result]\n{res_fixed}")
-        
-        req = "I need to know the capital of France, and then I need a poem about that city's most famous landmark."
-        res_dynamic = asyncio.run(run_dynamic_decomposition_api(req))
-        print(f"\n[Dynamic Result]\n{res_dynamic}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    doc = "Meeting notes: John needs to fix the server by Tuesday. Sarah will email the client."
+    res_fixed = asyncio.run(run_fixed_chain_api(doc))
+    
+    req = "I need to know the capital of France, and then I need a poem about that city's most famous landmark."
+    res_dynamic = asyncio.run(run_dynamic_decomposition_api(req))

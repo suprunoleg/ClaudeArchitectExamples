@@ -39,7 +39,6 @@ client = AsyncAnthropic()
 session_state = {"verified_customer_id": None}
 
 def run_process_refund(order_id: str, amount: float) -> str:
-    # EXAM SKILL: Implementing programmatic prerequisites that block downstream tool calls
     # In pure Python, we simply check our deterministic state before executing the logic.
     if not session_state.get("verified_customer_id"):
         return (
@@ -55,7 +54,6 @@ def run_get_customer(email: str) -> str:
     return "Customer not found."
 
 def run_escalate_to_human(customer_id: str, root_cause: str, refund_amount: float, recommended_action: str) -> str:
-    # EXAM SKILL: Compiling structured handoff summaries
     handoff_summary = (
         f"ESCALATION HANDOFF:\n"
         f"Customer ID: {customer_id}\n"
@@ -63,7 +61,6 @@ def run_escalate_to_human(customer_id: str, root_cause: str, refund_amount: floa
         f"Refund Amount: ${refund_amount}\n"
         f"Recommended Action: {recommended_action}"
     )
-    print(f"\n[SYSTEM] Escaling to human queue:\n{handoff_summary}")
     return "Successfully escalated to human queue."
 
 TOOLS = [
@@ -111,7 +108,6 @@ TOOLS = [
 # ==============================================================================
 
 async def run_enforcement_api_workflow(user_request: str):
-    print("--- Starting Deterministic API Enforcement Workflow ---")
     
     system_prompt = (
         "You are a Customer Support Agent.\n"
@@ -126,7 +122,6 @@ async def run_enforcement_api_workflow(user_request: str):
     max_iterations = 4
     
     for i in range(max_iterations):
-        print(f"\n--- Turn {i+1} ---")
         try:
             response = await client.messages.create(
                 model=DEFAULT_MODEL,
@@ -136,7 +131,6 @@ async def run_enforcement_api_workflow(user_request: str):
                 tools=TOOLS
             )
         except Exception as e:
-            print(f"[API Error - expected if dummy key] {e}")
             return "Workflow failed."
             
         messages.append({"role": "assistant", "content": response.content})
@@ -144,7 +138,6 @@ async def run_enforcement_api_workflow(user_request: str):
         if response.stop_reason == "tool_use":
             for block in response.content:
                 if block.type == "tool_use":
-                    print(f"[LLM called tool: {block.name}] args: {block.input}")
                     
                     if block.name == "process_refund":
                         res = run_process_refund(**block.input)
@@ -155,7 +148,6 @@ async def run_enforcement_api_workflow(user_request: str):
                     else:
                         res = f"Unknown tool {block.name}"
                         
-                    print(f"[Tool Result] {res}")
                     messages.append({
                         "role": "user",
                         "content": [
@@ -173,8 +165,4 @@ async def run_enforcement_api_workflow(user_request: str):
 
 if __name__ == "__main__":
     request = "I am test@example.com. My order 999 was broken. Please refund me $50 and also update my address."
-    try:
-        result = asyncio.run(run_enforcement_api_workflow(request))
-        print(f"\n[Agent Response]\n{result}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    result = asyncio.run(run_enforcement_api_workflow(request))

@@ -29,7 +29,6 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 client = AsyncAnthropic()
 
 # ==============================================================================
-# EXAM SKILL: Few-Shot Prompting
 # ==============================================================================
 
 SYSTEM_PROMPT = """
@@ -60,7 +59,6 @@ Follow the exact format from the examples. Do not write any other text.
 """
 
 async def run_few_shot_api(messy_text: str):
-    print(f"\n--- Starting Deterministic API Few-Shot Workflow ---")
     
     try:
         response = await client.messages.create(
@@ -74,11 +72,5 @@ async def run_few_shot_api(messy_text: str):
         return "[Mock Response expected if dummy key]"
 
 if __name__ == "__main__":
-    try:
-        req = "Hi! I am David. I'm 22 and based out of New York City."
-        print(f"User Input: {req}")
-        res = asyncio.run(run_few_shot_api(req))
-        print(f"[Agent Response -> should match CSV format]:\n{res}")
-        
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    req = "Hi! I am David. I'm 22 and based out of New York City."
+    res = asyncio.run(run_few_shot_api(req))

@@ -29,7 +29,6 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 client = AsyncAnthropic()
 
 # ==============================================================================
-# EXAM SKILL: Context Compaction
 # ==============================================================================
 
 async def summarize_context(long_history_array: list) -> str:
@@ -56,7 +55,6 @@ async def summarize_context(long_history_array: list) -> str:
         return "Mock Summary (Error)"
 
 async def run_context_management_api():
-    print(f"\n--- Starting Deterministic API Context Management Workflow ---")
     
     # Imagine a messages array that has grown to 50,000 tokens (50 turns)
     raw_messages_array = [
@@ -65,14 +63,7 @@ async def run_context_management_api():
         # ... 45 more turns of failing ...
         {"role": "assistant", "content": "I finally installed it correctly. The frontend is in /src/App.tsx."}
     ]
-    
-    # ❌ ANTI-PATTERN: Continuing to append to `raw_messages_array` and sending it to the API.
-    # The LLM will get lost in the middle reading 45 failed tool calls, increasing cost and latency.
-    
-    # ✅ BEST PRACTICE: Compact the context
-    print("Compacting 50,000 tokens of history...")
     compact_summary = await summarize_context(raw_messages_array)
-    print(f"Compacted Context:\n{compact_summary}")
     
     # Now use the compact context for the next turn, effectively resetting the messages array
     new_system_prompt = f"You are a coding assistant. Previous context: {compact_summary}"
@@ -90,8 +81,4 @@ async def run_context_management_api():
         return "[Mock Response expected if dummy key]"
 
 if __name__ == "__main__":
-    try:
-        res = asyncio.run(run_context_management_api())
-        print(f"\n[Agent Response]: {res}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    res = asyncio.run(run_context_management_api())

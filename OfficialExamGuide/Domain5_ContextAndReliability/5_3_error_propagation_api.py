@@ -30,12 +30,9 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 client = AsyncAnthropic()
 
 # ==============================================================================
-# EXAM SKILL: Error Propagation
 # ==============================================================================
 
 async def failing_subagent_logic(query: str):
-    # Simulates a subagent that throws an unhandled exception or hits an API rate limit
-    print(f"[Subagent invoked with query: {query}]")
     raise ConnectionError("Database timed out while searching.")
 
 TOOLS = [
@@ -55,7 +52,6 @@ TOOLS = [
 # ==============================================================================
 
 async def run_error_propagation_api(user_request: str):
-    print(f"\n--- Starting Deterministic API Error Propagation Workflow ---")
     
     system_prompt = (
         "You are the coordinator. You must search the database to answer the user's question. "
@@ -76,7 +72,6 @@ async def run_error_propagation_api(user_request: str):
                 tools=TOOLS
             )
         except Exception as e:
-            print(f"[API Error - expected if dummy key] {e}")
             return "Workflow failed."
             
         messages.append({"role": "assistant", "content": response.content})
@@ -85,12 +80,10 @@ async def run_error_propagation_api(user_request: str):
             for block in response.content:
                 if block.type == "tool_use" and block.name == "search_db":
                     
-                    # ✅ BEST PRACTICE: Wrap subagent tools in error-handling boundaries
                     try:
                         res = await failing_subagent_logic(**block.input)
                         is_error = False
                     except Exception as e:
-                        # EXAM SKILL: We catch the error and pass `is_error=True` back to the Coordinator LLM
                         res = f"SYSTEM ERROR IN SUBAGENT: {str(e)}"
                         is_error = True
                         
@@ -109,9 +102,5 @@ async def run_error_propagation_api(user_request: str):
     return "Max iterations reached."
 
 if __name__ == "__main__":
-    try:
-        req = "What is John's phone number?"
-        res = asyncio.run(run_error_propagation_api(req))
-        print(f"\n[Coordinator Response]: {res}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    req = "What is John's phone number?"
+    res = asyncio.run(run_error_propagation_api(req))

@@ -26,13 +26,10 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 
 
 # ==============================================================================
-# EXAM SKILL: Targeted Exploration Tools
 # ==============================================================================
 
-# ❌ ANTI-PATTERN: A tool that just returns `open(filename).read()`. 
 # If a file is 15,000 lines, this instantly blows out the LLM's context window.
 
-# ✅ BEST PRACTICE: A tool that returns only what is necessary (e.g. signatures)
 @tool("get_function_signature", "Gets the exact line where a function is defined without reading the whole file.", {"file_path": str, "func_name": str})
 async def get_function_signature(args):
     # In a real system, you would use `ast` or `ripgrep` here.
@@ -46,7 +43,6 @@ async def get_function_signature(args):
 # ==============================================================================
 
 async def run_codebase_exploration_sdk(user_request: str):
-    print(f"\n--- Starting SDK Large Codebase Exploration Workflow ---")
     
     system_prompt = (
         "You are a code explorer. You must find how to use the 'authenticate' function. "
@@ -69,9 +65,5 @@ async def run_codebase_exploration_sdk(user_request: str):
         return "[Mock Response expected if dummy key]"
 
 if __name__ == "__main__":
-    try:
-        req = "How do I call the authenticate function in core.py?"
-        res = asyncio.run(run_codebase_exploration_sdk(req))
-        print(f"\n[Agent Response]: {res}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    req = "How do I call the authenticate function in core.py?"
+    res = asyncio.run(run_codebase_exploration_sdk(req))

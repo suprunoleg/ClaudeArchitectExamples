@@ -27,10 +27,8 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 
 
 # ==============================================================================
-# EXAM SKILL: Writing unambiguous tool descriptions
 # ==============================================================================
 
-# ❌ ANTI-PATTERN: Poorly Bounded Tool
 # Description is too vague. When does the model use this vs a specific search?
 # Missing parameter descriptions.
 @tool(
@@ -42,7 +40,6 @@ async def bad_get_data(args):
     return {"content": [{"type": "text", "text": "Raw data."}]}
 
 
-# ✅ BEST PRACTICE: Clear Boundaries and Enums
 # - Specifies EXACTLY what it does and what it returns.
 # - Specifies when NOT to use it (boundary definition).
 # - Uses Enums to restrict string inputs to valid options.
@@ -74,7 +71,6 @@ async def good_get_user_profile(args):
 # ==============================================================================
 
 async def run_tool_design_sdk(user_request: str):
-    print("\n--- Starting SDK Tool Design Workflow ---")
     
     # Notice we only supply the well-designed tool to prevent routing confusion
     options = ClaudeAgentOptions(
@@ -94,10 +90,6 @@ async def run_tool_design_sdk(user_request: str):
         pass
 
 if __name__ == "__main__":
-    try:
-        # The LLM will easily map "U-999" to user_id and select an enum for detail_level
-        req = "Can you look up the full profile for user U-999?"
-        res = asyncio.run(run_tool_design_sdk(req))
-        print(f"\n[Agent Response]\n{res}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    # The LLM will easily map "U-999" to user_id and select an enum for detail_level
+    req = "Can you look up the full profile for user U-999?"
+    res = asyncio.run(run_tool_design_sdk(req))

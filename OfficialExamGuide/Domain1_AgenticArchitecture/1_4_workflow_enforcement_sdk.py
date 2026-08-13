@@ -67,7 +67,6 @@ async def process_refund(args):
     "recommended_action": str
 })
 async def escalate_to_human(args):
-    # EXAM SKILL: Compiling structured handoff summaries
     handoff_summary = (
         f"ESCALATION HANDOFF:\n"
         f"Customer ID: {args.get('customer_id')}\n"
@@ -75,7 +74,6 @@ async def escalate_to_human(args):
         f"Refund Amount: ${args.get('refund_amount')}\n"
         f"Recommended Action: {args.get('recommended_action')}"
     )
-    print(f"\n[SYSTEM] Escaling to human queue:\n{handoff_summary}")
     return {"content": [{"type": "text", "text": "Successfully escalated to human queue."}]}
 
 # Create local tool server
@@ -85,7 +83,6 @@ customer_server = create_sdk_mcp_server(name="customer_server", tools=[get_custo
 # 2. PROGRAMMATIC ENFORCEMENT HOOK
 # ==============================================================================
 
-# EXAM SKILL: Implementing programmatic prerequisites that block downstream tool calls
 async def refund_prerequisite_hook(event: PreToolUseHookInput, matcher: Optional[str], context: HookContext) -> dict:
     """Blocks process_refund if get_customer hasn't been successfully run first."""
     
@@ -109,9 +106,7 @@ async def refund_prerequisite_hook(event: PreToolUseHookInput, matcher: Optional
 # ==============================================================================
 
 async def run_enforcement_sdk_workflow(user_request: str):
-    print("--- Starting SDK Enforcement Workflow ---")
     
-    # EXAM SKILL: Decomposing multi-concern requests
     system_prompt = (
         "You are a Customer Support Agent.\n"
         "1. Decompose multi-concern customer requests into distinct items and investigate each in parallel.\n"
@@ -145,9 +140,6 @@ async def run_enforcement_sdk_workflow(user_request: str):
 if __name__ == "__main__":
     # Test a refund attempt where the model might try to skip verification
     request = "I am test@example.com. My order 999 was broken. Please refund me $50 and also update my address."
-    try:
-        result = asyncio.run(run_enforcement_sdk_workflow(request))
-        if result:
-            print(f"\n[Agent Response]\n{result}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    result = asyncio.run(run_enforcement_sdk_workflow(request))
+    if result:
+        pass

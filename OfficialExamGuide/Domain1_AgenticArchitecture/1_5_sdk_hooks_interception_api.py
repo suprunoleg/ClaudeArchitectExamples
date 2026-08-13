@@ -72,7 +72,6 @@ TOOLS = [
 # 2. MIDDLEWARE (API Equivalents of Hooks)
 # ==============================================================================
 
-# EXAM SKILL: Implementing PreToolUse interception
 def secure_execute_sql(query_str: str) -> str:
     upper_query = query_str.upper()
     
@@ -88,7 +87,6 @@ def secure_execute_sql(query_str: str) -> str:
     return execute_sql(query_str)
 
 
-# EXAM SKILL: Implementing PostToolUse data normalization
 def safe_fetch_user_data(user_id: int) -> str:
     # 1. Execute core tool
     raw_output = fetch_user_data(user_id)
@@ -112,7 +110,6 @@ def safe_fetch_user_data(user_id: int) -> str:
 # ==============================================================================
 
 async def run_hooks_api_workflow(user_request: str):
-    print(f"\n--- Starting Deterministic API Middleware Workflow: '{user_request}' ---")
     
     messages = [{"role": "user", "content": user_request}]
     
@@ -120,7 +117,6 @@ async def run_hooks_api_workflow(user_request: str):
     max_iterations = 3
     
     for i in range(max_iterations):
-        print(f"--- Turn {i+1} ---")
         try:
             response = await client.messages.create(
                 model=DEFAULT_MODEL,
@@ -129,7 +125,6 @@ async def run_hooks_api_workflow(user_request: str):
                 tools=TOOLS
             )
         except Exception as e:
-            print(f"[API Error - expected if dummy key] {e}")
             return "Workflow failed."
             
         messages.append({"role": "assistant", "content": response.content})
@@ -137,7 +132,6 @@ async def run_hooks_api_workflow(user_request: str):
         if response.stop_reason == "tool_use":
             for block in response.content:
                 if block.type == "tool_use":
-                    print(f"[LLM called tool: {block.name}] args: {block.input}")
                     
                     if block.name == "execute_sql":
                         res = secure_execute_sql(block.input.get("query", ""))
@@ -146,7 +140,6 @@ async def run_hooks_api_workflow(user_request: str):
                     else:
                         res = f"Unknown tool {block.name}"
                         
-                    print(f"[Tool Result] {res}")
                     messages.append({
                         "role": "user",
                         "content": [
@@ -163,13 +156,8 @@ async def run_hooks_api_workflow(user_request: str):
     return "Max iterations reached."
 
 if __name__ == "__main__":
-    try:
-        # Test 1: PII Redaction
-        res1 = asyncio.run(run_hooks_api_workflow("Fetch user data for user 1 and tell me their SSN."))
-        print(f"\n[Agent Response]\n{res1}")
-        
-        # Test 2: Input Modification & Denial
-        res2 = asyncio.run(run_hooks_api_workflow("Execute a SQL query to DROP the users table."))
-        print(f"\n[Agent Response]\n{res2}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    # Test 1: PII Redaction
+    res1 = asyncio.run(run_hooks_api_workflow("Fetch user data for user 1 and tell me their SSN."))
+    
+    # Test 2: Input Modification & Denial
+    res2 = asyncio.run(run_hooks_api_workflow("Execute a SQL query to DROP the users table."))

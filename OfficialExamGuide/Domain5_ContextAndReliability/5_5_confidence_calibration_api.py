@@ -49,7 +49,6 @@ EXTRACTION_TOOL = {
 }
 
 async def run_confidence_calibration_api(patient_notes: str):
-    print(f"\n--- Starting Deterministic API Confidence Calibration Workflow ---")
     
     try:
         # We force the LLM to use the extraction tool to guarantee the schema
@@ -62,38 +61,27 @@ async def run_confidence_calibration_api(patient_notes: str):
             tool_choice={"type": "tool", "name": "extract_diagnosis"}
         )
     except Exception as e:
-        print(f"[API Error - expected if dummy key] {e}")
         return
         
     tool_block = next((b for b in response.content if b.type == 'tool_use'), None)
     if not tool_block:
-        print("Failed to use tool.")
         return
         
-    # EXAM SKILL: Routing based on confidence
     # If confidence is below 0.85, we escalate to a human doctor.
     extracted_data = tool_block.input
     confidence = float(extracted_data.get("confidence_score", 0.0))
     diagnosis = extracted_data.get("diagnosis", "Unknown")
     
-    print(f"Extracted Diagnosis: {diagnosis}")
-    print(f"Confidence Score: {confidence}")
-    
     if confidence < 0.85:
-        print(">> ESCALATION TRIGGERED: Confidence too low. Routing to human doctor for manual review.")
+        pass
     else:
-        print(">> HIGH CONFIDENCE: Proceeding with automated workflow.")
+        pass
 
 if __name__ == "__main__":
-    try:
-        # High confidence scenario
-        notes_1 = "Patient presents with a clearly broken right femur protruding from the skin."
-        print(f"\nPatient 1 Notes: {notes_1}")
-        asyncio.run(run_confidence_calibration_api(notes_1))
-        
-        # Low confidence scenario (ambiguous)
-        notes_2 = "Patient feels slightly dizzy and has a mild headache that comes and goes."
-        print(f"\nPatient 2 Notes: {notes_2}")
-        asyncio.run(run_confidence_calibration_api(notes_2))
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    # High confidence scenario
+    notes_1 = "Patient presents with a clearly broken right femur protruding from the skin."
+    asyncio.run(run_confidence_calibration_api(notes_1))
+    
+    # Low confidence scenario (ambiguous)
+    notes_2 = "Patient feels slightly dizzy and has a mild headache that comes and goes."
+    asyncio.run(run_confidence_calibration_api(notes_2))

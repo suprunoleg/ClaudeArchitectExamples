@@ -40,7 +40,6 @@ class MedicalExtraction(BaseModel):
     )
 
 async def run_confidence_calibration_sdk(patient_notes: str):
-    print(f"\n--- Starting SDK Confidence Calibration Workflow ---")
     
     options = ClaudeAgentOptions(
         model=DEFAULT_MODEL,
@@ -54,35 +53,25 @@ async def run_confidence_calibration_sdk(patient_notes: str):
             if isinstance(msg, ResultMessage):
                 extracted_data = msg.result
     except Exception as e:
-        print(f"[SDK Error - expected if dummy key] {e}")
         return
         
     if not extracted_data:
         return
         
-    # EXAM SKILL: Routing based on confidence
     # If confidence is below 0.85, we escalate to a human doctor.
     confidence = extracted_data.get("confidence_score", 0.0)
     diagnosis = extracted_data.get("diagnosis", "Unknown")
     
-    print(f"Extracted Diagnosis: {diagnosis}")
-    print(f"Confidence Score: {confidence}")
-    
     if confidence < 0.85:
-        print(">> ESCALATION TRIGGERED: Confidence too low. Routing to human doctor for manual review.")
+        pass
     else:
-        print(">> HIGH CONFIDENCE: Proceeding with automated workflow.")
+        pass
 
 if __name__ == "__main__":
-    try:
-        # High confidence scenario
-        notes_1 = "Patient presents with a clearly broken right femur protruding from the skin."
-        print(f"\nPatient 1 Notes: {notes_1}")
-        asyncio.run(run_confidence_calibration_sdk(notes_1))
-        
-        # Low confidence scenario (ambiguous)
-        notes_2 = "Patient feels slightly dizzy and has a mild headache that comes and goes."
-        print(f"\nPatient 2 Notes: {notes_2}")
-        asyncio.run(run_confidence_calibration_sdk(notes_2))
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    # High confidence scenario
+    notes_1 = "Patient presents with a clearly broken right femur protruding from the skin."
+    asyncio.run(run_confidence_calibration_sdk(notes_1))
+    
+    # Low confidence scenario (ambiguous)
+    notes_2 = "Patient feels slightly dizzy and has a mild headache that comes and goes."
+    asyncio.run(run_confidence_calibration_sdk(notes_2))

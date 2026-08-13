@@ -25,14 +25,11 @@ if "ANTHROPIC_API_KEY" not in os.environ:
     os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
 
 # ==============================================================================
-# EXAM SKILL: Provenance & Uncertainty
 # ==============================================================================
 
-# ❌ ANTI-PATTERN: Vague instructions
 # "Answer the user's question based on these docs." -> The LLM will blend the docs, 
 # and if they contradict, it will likely hallucinate a compromise or pick one arbitrarily.
 
-# ✅ BEST PRACTICE: Enforce Citations and Explicit Uncertainty
 SYSTEM_PROMPT = """
 You are a research analyst. Answer the user's question based ONLY on the provided documents.
 
@@ -42,9 +39,7 @@ RULES:
 """
 
 async def run_provenance_sdk():
-    print(f"\n--- Starting SDK Provenance Workflow ---")
     
-    # ✅ BEST PRACTICE: Using native `document` blocks for citations.
     # Because `query()` normally takes a string prompt, we use its streaming input 
     # feature (AsyncIterable) to pass raw Anthropic message blocks.
     async def build_prompt():
@@ -97,8 +92,4 @@ async def run_provenance_sdk():
         return "[Mock Response expected if dummy key]"
 
 if __name__ == "__main__":
-    try:
-        res = asyncio.run(run_provenance_sdk())
-        print(f"\n[Agent Response (Should highlight contradiction & cite docs)]:\n{res}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    res = asyncio.run(run_provenance_sdk())

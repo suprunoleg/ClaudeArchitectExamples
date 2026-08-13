@@ -27,12 +27,9 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 
 
 # ==============================================================================
-# EXAM SKILL: Error Propagation
 # ==============================================================================
 
 async def failing_subagent_logic(args):
-    # Simulates a subagent that throws an unhandled exception or hits an API rate limit
-    print(f"[Subagent invoked with args: {args}]")
     raise ConnectionError("Database timed out while searching.")
 
 failing_subagent = AgentDefinition(
@@ -42,17 +39,13 @@ failing_subagent = AgentDefinition(
 )
 
 async def run_error_propagation_sdk(user_request: str):
-    print(f"\n--- Starting SDK Error Propagation Workflow ---")
     
-    # ❌ ANTI-PATTERN: The coordinator calls the subagent blindly. If the subagent throws, 
     # the entire coordinator crashes and the user sees a raw Python stack trace.
     
-    # ✅ BEST PRACTICE: Wrap subagent tools in error-handling boundaries so the LLM knows it failed.
     async def safe_subagent_wrapper(args):
         try:
             return await failing_subagent_logic(args)
         except Exception as e:
-            # EXAM SKILL: We return the error as a string instead of throwing it, 
             # allowing the Coordinator LLM to read it and decide what to do next.
             return f"SYSTEM ERROR IN SUBAGENT: {str(e)}"
     
@@ -85,9 +78,5 @@ async def run_error_propagation_sdk(user_request: str):
         return "[Mock Response expected if dummy key]"
 
 if __name__ == "__main__":
-    try:
-        req = "What is John's phone number?"
-        res = asyncio.run(run_error_propagation_sdk(req))
-        print(f"\n[Coordinator Response]: {res}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    req = "What is John's phone number?"
+    res = asyncio.run(run_error_propagation_sdk(req))

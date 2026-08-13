@@ -27,13 +27,11 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 
 
 # ==============================================================================
-# EXAM SKILL: Integrating external stdio MCP servers
 # ==============================================================================
 # Unlike `create_sdk_mcp_server()` which runs in the same Python process,
 # a true MCP server runs externally and communicates over stdio or SSE.
 
 async def run_mcp_integration_sdk(user_request: str):
-    print("\n--- Starting SDK MCP Integration Workflow ---")
     
     # In a production app, this would point to a real installed MCP server like PostgreSQL
     postgres_mcp_config = {
@@ -41,7 +39,6 @@ async def run_mcp_integration_sdk(user_request: str):
         "args": [
             "-y",
             "@modelcontextprotocol/server-postgres",
-            # EXAM SKILL: Securely passing credentials using environment variables
             # NEVER hardcode the database URL in the configuration block.
             os.environ.get("DATABASE_URL", "postgresql://user:pass@localhost/mockdb")
         ],
@@ -70,9 +67,5 @@ async def run_mcp_integration_sdk(user_request: str):
         pass
 
 if __name__ == "__main__":
-    try:
-        req = "Query the PostgreSQL database for the top 5 users."
-        res = asyncio.run(run_mcp_integration_sdk(req))
-        print(f"\n[Agent Response]\n{res}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    req = "Query the PostgreSQL database for the top 5 users."
+    res = asyncio.run(run_mcp_integration_sdk(req))

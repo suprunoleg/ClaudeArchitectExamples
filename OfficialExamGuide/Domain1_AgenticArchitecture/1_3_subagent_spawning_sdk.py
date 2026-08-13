@@ -33,7 +33,6 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 # SUBAGENT DEFINITIONS
 # ==============================================================================
 
-# EXAM SKILL: AgentDefinition configuration including tool restrictions
 searcher_agent = AgentDefinition(
     description="Call this agent to search the web for raw data about a specific topic.",
     prompt=(
@@ -59,7 +58,6 @@ synthesizer_agent = AgentDefinition(
 
 async def run_spawning_sdk_workflow(user_request: str):
     
-    # EXAM SKILL: Designing coordinator prompts that specify goals rather than step-by-step instructions
     coordinator_system_prompt = (
         "You are the Coordinator Agent. You manage 'searcher' and 'synthesizer' subagents.\n\n"
         "GOAL: Deliver a highly accurate, synthesized research report.\n\n"
@@ -78,24 +76,19 @@ async def run_spawning_sdk_workflow(user_request: str):
             "searcher": searcher_agent,
             "synthesizer": synthesizer_agent
         },
-        # EXAM SKILL: allowedTools must include "Task" for a coordinator to invoke subagents
         allowed_tools=["Agent"],
         system_prompt=coordinator_system_prompt
     )
-
-    print("--- Starting SDK Task Spawning Workflow ---")
     try:
         final_output = None
         async for msg in query(prompt=user_request, options=options):
             # Optional: Log tool usage to prove parallel execution
             m_type = getattr(msg, "type", None)
             if m_type == "tool_use" and getattr(msg, "tool_name", "") == "Task":
-                print(f"  [Coordinator] Spawning subagent via Task tool...")
+                pass
 
             if isinstance(msg, ResultMessage):
                 final_output = msg.result
-
-        print("\n--- Workflow Complete ---")
         return final_output
                 
     except Exception as e:
@@ -104,10 +97,6 @@ async def run_spawning_sdk_workflow(user_request: str):
 
 if __name__ == "__main__":
     request = "Research the history of the Apollo 11 mission and the Voyager 1 mission."
-    try:
-        result = asyncio.run(run_spawning_sdk_workflow(request))
-        if result:
-            print("\n=== FINAL SYNTHESIZED REPORT ===")
-            print(result)
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
+    result = asyncio.run(run_spawning_sdk_workflow(request))
+    if result:
+        pass

@@ -29,7 +29,6 @@ if "ANTHROPIC_API_KEY" not in os.environ:
 client = AsyncAnthropic()
 
 # ==============================================================================
-# EXAM SKILL: Provenance & Uncertainty
 # ==============================================================================
 
 SYSTEM_PROMPT = """
@@ -41,9 +40,7 @@ RULES:
 """
 
 async def run_provenance_api():
-    print(f"\n--- Starting Deterministic API Provenance Workflow ---")
     
-    # ✅ BEST PRACTICE: Use native `document` blocks with citations enabled
     messages = [
         {
             "role": "user",
@@ -88,8 +85,4 @@ async def run_provenance_api():
         return "[Mock Response expected if dummy key]"
 
 if __name__ == "__main__":
-    try:
-        res = asyncio.run(run_provenance_api())
-        print(f"\n[Agent Response (Should highlight contradiction & cite docs)]:\n{res}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    res = asyncio.run(run_provenance_api())

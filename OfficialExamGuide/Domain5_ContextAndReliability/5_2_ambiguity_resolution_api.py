@@ -31,11 +31,9 @@ client = AsyncAnthropic()
 
 
 # ==============================================================================
-# EXAM SKILL: Ambiguity Resolution Tool
 # ==============================================================================
 
 def ask_human(question: str) -> str:
-    print(f"\n[AGENT PAUSED TO ASK HUMAN]: {question}")
     # Simulated human answer
     return "I meant the production database."
 
@@ -68,9 +66,7 @@ TOOLS = [
 # ==============================================================================
 
 async def run_ambiguity_resolution_api(user_request: str):
-    print(f"\n--- Starting Deterministic API Ambiguity Resolution Workflow ---")
     
-    # ✅ BEST PRACTICE: Mandating ambiguity resolution
     system_prompt = (
         "You are a database admin. "
         "CRITICAL RULE: If a user asks you to delete or modify a database but does NOT explicitly "
@@ -84,7 +80,6 @@ async def run_ambiguity_resolution_api(user_request: str):
     max_iterations = 3
     
     for i in range(max_iterations):
-        print(f"--- Turn {i+1} ---")
         try:
             response = await client.messages.create(
                 model=DEFAULT_MODEL,
@@ -94,7 +89,6 @@ async def run_ambiguity_resolution_api(user_request: str):
                 tools=TOOLS
             )
         except Exception as e:
-            print(f"[API Error - expected if dummy key] {e}")
             return "Workflow failed."
             
         messages.append({"role": "assistant", "content": response.content})
@@ -102,7 +96,6 @@ async def run_ambiguity_resolution_api(user_request: str):
         if response.stop_reason == "tool_use":
             for block in response.content:
                 if block.type == "tool_use":
-                    print(f"[LLM called tool: {block.name}] args: {block.input}")
                     
                     if block.name == "ask_human":
                         res = ask_human(**block.input)
@@ -121,9 +114,5 @@ async def run_ambiguity_resolution_api(user_request: str):
     return "Max iterations reached."
 
 if __name__ == "__main__":
-    try:
-        req = "Please delete the database immediately!"
-        res = asyncio.run(run_ambiguity_resolution_api(req))
-        print(f"\n[Agent Response]: {res}")
-    except Exception as e:
-        print(f"\n[SYSTEM] Run complete or failed: {e}")
+    req = "Please delete the database immediately!"
+    res = asyncio.run(run_ambiguity_resolution_api(req))
