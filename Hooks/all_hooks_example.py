@@ -25,8 +25,11 @@ from claude_agent_sdk import (
     create_sdk_mcp_server
 )
 
-load_dotenv()
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
 
+# Load environment variables
+load_dotenv()
 if "ANTHROPIC_API_KEY" not in os.environ:
     os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
 # ==============================================================================
@@ -137,6 +140,7 @@ async def run_agent_loop(user_prompt: str):
     
     # Wire up all hooks in a single options configuration
     options = ClaudeAgentOptions(
+        model=DEFAULT_MODEL,
         mcp_servers={"db_server": db_server},
         allowed_tools=["execute_sql", "fetch_user_data"],
         hooks={
