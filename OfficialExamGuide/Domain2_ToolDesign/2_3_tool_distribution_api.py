@@ -2,9 +2,6 @@
 Task Statement 2.3: Distribute tools appropriately across agents and configure tool choice
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 2.3 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - The principle of least privilege (only giving agents the tools they need).
 - How tool_choice ("auto", "any", "tool") forces or restricts LLM behavior.

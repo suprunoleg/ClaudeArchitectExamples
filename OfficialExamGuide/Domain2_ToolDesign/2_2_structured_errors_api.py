@@ -2,9 +2,6 @@
 Task Statement 2.2: Implement structured error responses for MCP tools
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 2.2 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - The `is_error` API protocol flag and how it influences LLM behavior.
 - The difference between a system crash vs a graceful tool error.

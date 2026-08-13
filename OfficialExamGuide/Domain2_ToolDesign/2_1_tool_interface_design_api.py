@@ -2,9 +2,6 @@
 Task Statement 2.1: Design effective tool interfaces with clear descriptions and boundaries
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 2.1 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - How the LLM interprets tool descriptions and parameter descriptions as part of its system prompt.
 - The impact of poorly bounded tools (e.g., overlapping functionality) on routing reliability.

@@ -2,9 +2,6 @@
 Task Statement 4.4: Implement validation, retry, and feedback loops for extraction quality
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 4.4 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - How to validate LLM outputs against strict business logic rules.
 - How to feed validation errors back into the prompt so the LLM can self-correct.

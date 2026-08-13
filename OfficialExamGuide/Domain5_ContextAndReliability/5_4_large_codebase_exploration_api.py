@@ -2,9 +2,6 @@
 Task Statement 5.4: Manage context effectively in large codebase exploration
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 5.4 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - How to explore large codebases without reading entire files into context.
 - Using targeted tools (`grep`, AST parsing) to pull just the relevant signatures.

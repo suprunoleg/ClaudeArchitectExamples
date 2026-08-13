@@ -2,9 +2,6 @@
 Task Statement 4.6: Design multi-instance and multi-pass review architectures
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 4.6 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - When to use multiple instances of a model (parallel ensemble) vs multi-pass review (sequential).
 - Multi-instance reduces variance by aggregating multiple parallel responses.

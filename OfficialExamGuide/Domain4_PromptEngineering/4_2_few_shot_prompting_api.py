@@ -2,9 +2,6 @@
 Task Statement 4.2: Apply few-shot prompting to improve output consistency and quality
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 4.2 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - How to structure few-shot examples using XML tags (`<examples><example>...`).
 - When to use few-shot examples (when the output format or tonal voice is very specific).

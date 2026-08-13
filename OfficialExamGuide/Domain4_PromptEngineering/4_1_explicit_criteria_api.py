@@ -2,9 +2,6 @@
 Task Statement 4.1: Design prompts with explicit criteria to improve precision
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 4.1 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - The difference between vague criteria and explicit criteria.
 - How explicit criteria reduce false positives in classification/extraction tasks.

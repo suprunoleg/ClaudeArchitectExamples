@@ -2,9 +2,6 @@
 Task Statement 1.6: Design task decomposition strategies for complex workflows
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 1.6 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - When to use prompt chaining (fixed sequence) vs dynamic decomposition (agentic routing).
 - How to partition context between decomposition steps to avoid context pollution.

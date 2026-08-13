@@ -2,9 +2,6 @@
 Task Statement 5.2: Design effective escalation and ambiguity resolution patterns
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 5.2 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - How to instruct the LLM to STOP and ask the user for clarification rather than hallucinating an answer.
 - When an `ask_human` tool is strictly necessary.

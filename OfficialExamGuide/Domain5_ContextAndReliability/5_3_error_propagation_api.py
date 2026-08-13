@@ -2,9 +2,6 @@
 Task Statement 5.3: Implement error propagation strategies across multi-agent systems
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 5.3 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - How errors from a subagent bubble up to a coordinator agent.
 - How the coordinator can catch the error and decide whether to retry or fail.

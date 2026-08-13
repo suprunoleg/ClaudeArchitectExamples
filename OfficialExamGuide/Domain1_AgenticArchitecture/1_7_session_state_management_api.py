@@ -2,9 +2,6 @@
 Task Statement 1.7: Manage session state, resumption, and forking
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 1.7 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - How session state is persisted across interruptions.
 - The differences between resuming a session vs forking a session for divergent exploration.

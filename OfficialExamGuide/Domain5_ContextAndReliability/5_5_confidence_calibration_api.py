@@ -2,9 +2,6 @@
 Task Statement 5.5: Design human review workflows and confidence calibration
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 5.5 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - How to instruct an LLM to output a "confidence score".
 - How to route low-confidence predictions to a human-in-the-loop (HITL) review queue.

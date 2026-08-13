@@ -2,9 +2,6 @@
 Task Statement 5.6: Preserve information provenance and handle uncertainty
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 5.6 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - How to instruct an LLM to cite its sources when generating an answer (provenance).
 - Handling contradictions across sources by acknowledging the uncertainty.

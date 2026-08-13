@@ -2,9 +2,6 @@
 Task Statement 5.1: Manage conversation context to preserve critical information
 (API VERSION)
 
-This file demonstrates how to build the identical patterns tested in 5.1 using 
-deterministic, code-first Python architecture instead of relying on the SDK.
-
 Knowledge of:
 - The "Lost in the Middle" phenomenon (LLMs pay most attention to the start and end of context).
 - How to prevent context bloat by compressing long transcripts.
