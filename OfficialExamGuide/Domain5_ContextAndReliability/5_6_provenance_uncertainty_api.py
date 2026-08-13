@@ -43,19 +43,45 @@ RULES:
 async def run_provenance_api():
     print(f"\n--- Starting Deterministic API Provenance Workflow ---")
     
-    mock_documents = (
-        "[Doc A] The 2023 Q4 revenue was $45 Million.\n"
-        "[Doc B] According to the audited logs, 2023 Q4 revenue was $42 Million due to refunds."
-    )
-    
-    user_request = f"What was the Q4 revenue?\n\n<docs>\n{mock_documents}\n</docs>"
+    # ✅ BEST PRACTICE: Use native `document` blocks with citations enabled
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "document",
+                    "source": {
+                        "type": "text",
+                        "media_type": "text/plain",
+                        "data": "The 2023 Q4 revenue was $45 Million."
+                    },
+                    "title": "Doc A",
+                    "citations": {"enabled": True}
+                },
+                {
+                    "type": "document",
+                    "source": {
+                        "type": "text",
+                        "media_type": "text/plain",
+                        "data": "According to the audited logs, 2023 Q4 revenue was $42 Million due to refunds."
+                    },
+                    "title": "Doc B",
+                    "citations": {"enabled": True}
+                },
+                {
+                    "type": "text",
+                    "text": "What was the Q4 revenue?"
+                }
+            ]
+        }
+    ]
     
     try:
         response = await client.messages.create(
             model=DEFAULT_MODEL,
             max_tokens=300,
             system=SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": user_request}]
+            messages=messages
         )
         return response.content[0].text
     except Exception as e:

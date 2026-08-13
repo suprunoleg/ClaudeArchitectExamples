@@ -44,12 +44,42 @@ RULES:
 async def run_provenance_sdk():
     print(f"\n--- Starting SDK Provenance Workflow ---")
     
-    mock_documents = (
-        "[Doc A] The 2023 Q4 revenue was $45 Million.\n"
-        "[Doc B] According to the audited logs, 2023 Q4 revenue was $42 Million due to refunds."
-    )
-    
-    user_request = f"What was the Q4 revenue?\n\n<docs>\n{mock_documents}\n</docs>"
+    # ✅ BEST PRACTICE: Using native `document` blocks for citations.
+    # Because `query()` normally takes a string prompt, we use its streaming input 
+    # feature (AsyncIterable) to pass raw Anthropic message blocks.
+    async def build_prompt():
+        yield {
+            "type": "user",
+            "message": {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "document",
+                        "source": {
+                            "type": "text",
+                            "media_type": "text/plain",
+                            "data": "The 2023 Q4 revenue was $45 Million."
+                        },
+                        "title": "Doc A",
+                        "citations": {"enabled": True}
+                    },
+                    {
+                        "type": "document",
+                        "source": {
+                            "type": "text",
+                            "media_type": "text/plain",
+                            "data": "According to the audited logs, 2023 Q4 revenue was $42 Million due to refunds."
+                        },
+                        "title": "Doc B",
+                        "citations": {"enabled": True}
+                    },
+                    {
+                        "type": "text",
+                        "text": "What was the Q4 revenue?"
+                    }
+                ]
+            }
+        }
     
     options = ClaudeAgentOptions(
         model=DEFAULT_MODEL,
@@ -58,7 +88,8 @@ async def run_provenance_sdk():
 
     try:
         final_output = None
-        async for msg in query(prompt=user_request, options=options):
+        # Pass the async generator to `prompt`
+        async for msg in query(prompt=build_prompt(), options=options):
             if isinstance(msg, ResultMessage):
                 final_output = msg.result
         return final_output
