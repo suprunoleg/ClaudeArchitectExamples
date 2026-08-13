@@ -56,8 +56,9 @@ Always ensure commands run within the dedicated Python virtual environment `.ven
    - Do not remove or mutate unrelated comments or docstrings.
    - **File Introductions:** Each script file (especially complicated ones) must begin with a concise, descriptive introductory comment describing the pattern and purpose of the script. If needed, you can add 1-2 more sentences (ONLY IF IT ADDS VALUE).
 
-3. **Verification:**
-   - After creating or modifying Python scripts, test execution using the `.venv` interpreter.
+3. **Execution & API Credits (CRITICAL):**
+   - **DO NOT** execute Python scripts that make LLM API calls using the `run_command` tool. The user has explicitly requested this to conserve their API credits. Write the code and let the user execute it manually on their own machine.
+   - **ANTI-TOKEN-HOG RULE:** When writing examples that involve multi-agent fan-outs (`asyncio.gather`) or agentic `while` loops, you MUST hardcode strict limiters (e.g., `max_iterations = 2`, or limiting array slices to `[:2]`). Do NOT write code that spawns 10+ concurrent subagents or accumulates massive context windows unchecked. Protect the user's wallet at all costs.
 
 ---
 
@@ -83,11 +84,9 @@ The core purpose of this project is to provide complete, end-to-end working exam
 
 ---
 
-## 5. Official Exam Guide Path Rules
+## 5. Official Exam Guide Path Rules (Dual Implementation)
 
-For any agent generating or modifying canonical examples within the `OfficialExamGuide/` directory, you MUST adhere to a **deterministic, code-first orchestration** paradigm:
+For any agent generating or modifying canonical examples within the `OfficialExamGuide/` directory, you MUST implement **TWO** distinct versions of every task:
 
-1. **Deterministic Orchestration**: Do not rely on natural language system prompts to drive core pipeline logic (e.g., routing, looping, or dynamic decomposition).
-2. **Programmatic Control Flow**: Use standard Python constructs (`asyncio.gather`, `while`/`for` loops, `try/except`) for multi-agent workflows. 
-3. **Structured Outputs**: When the model must make a control flow decision (like analyzing intent or evaluating coverage gaps), strictly use structured outputs (e.g., Pydantic models like `RoutingDecision` or `EvaluatorAssessment`) to enforce type-safety and predictability.
-4. **Isolated Context & Observability**: Avoid implicitly leaking state. Route messages programmatically using explicit envelopes or trace IDs.
+1. **The SDK Version (`*_sdk.py`)**: This version must strictly use the `claude_agent_sdk` (`ClaudeAgentOptions`, `AgentDefinition`, `query`, `Task` tool, `Hooks`). This is required because the Anthropic exam explicitly tests knowledge of these specific SDK abstractions, even if they force a prompt-driven/probabilistic architecture.
+2. **The API Version (`*_api.py`)**: This version must strictly use the raw `anthropic` API to implement the same task using a **deterministic, code-first** paradigm. Use explicit Python control flow (`asyncio.gather`, `while` loops, explicit `MessageEnvelope` routing, raw `stop_reason` inspection) and structured outputs (Pydantic schemas) to prove how the architecture should be built robustly in a production environment without relying on probabilistic LLM routing.

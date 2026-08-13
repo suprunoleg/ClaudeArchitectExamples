@@ -173,13 +173,13 @@ class DeterministicCoordinator:
         # Step 1: Dynamic classification (Partitioning research scope)
         decision = await self.analyze_and_route(user_query)
         logging.info(f"Routing Reasoning: {decision.reasoning}")
-        logging.info(f"Selected Subagents: {decision.selected_subagents}")
+        logging.info(f"Selected Subagents: {decision.selected_subagents[:2]}")
 
         if "searcher" not in decision.selected_subagents:
             return "No search required."
 
         # Step 2: EXAM SKILL: Iterative refinement loops
-        max_iterations = 3
+        max_iterations = 2
         current_context = ""
         
         # Initial search delegation
@@ -200,12 +200,12 @@ class DeterministicCoordinator:
                 logging.info("[Coordinator] Coverage sufficient. Finalizing.")
                 return synth_res.payload["result"]
                 
-            logging.info(f"[Coordinator] Gaps identified: {assessment.identified_gaps}")
-            logging.info(f"[Coordinator] Dispatching targeted queries: {assessment.followup_queries}")
+            logging.info(f"[Coordinator] Gaps identified: {assessment.identified_gaps[:2]}")
+            logging.info(f"[Coordinator] Dispatching targeted queries: {assessment.followup_queries[:2]}")
             
             # Re-delegate missing topics (using parallel execution to save time)
             # EXAM SKILL: Parallel execution for multiple gaps
-            tasks = [self.route_message("searcher", q, trace_id) for q in assessment.followup_queries]
+            tasks = [self.route_message("searcher", q, trace_id) for q in assessment.followup_queries[:2]]
             new_findings = await asyncio.gather(*tasks)
             
             for f in new_findings:
