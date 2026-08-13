@@ -1,0 +1,49 @@
+# Task Statement 3.6: Integrate Claude Code into CI/CD pipelines
+# (Claude Code Domain)
+#
+# Knowledge of:
+# - Using `claude --print` in automated environments to bypass interactive prompts.
+# - Routing context (diffs, error logs) into Claude Code inside a CI pipeline.
+#
+# Skills in:
+# - Writing a CI pipeline script that correctly invokes claude.
+
+name: Claude Code PR Reviewer
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Need full history to generate diffs
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Generate PR Diff
+        run: git diff origin/${{ github.base_ref }} HEAD > pr_diff.txt
+
+      - name: Run Claude Code Review
+        env:
+          # EXAM SKILL: Always inject credentials via CI secrets, never hardcode
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        # EXAM SKILL: Using `--print` for non-interactive execution
+        # In a CI environment, there is no human to hit "Enter".
+        # `claude --print` executes the prompt and dumps the final answer to stdout, 
+        # bypassing the interactive UI.
+        run: |
+          claude --print "You are an expert code reviewer. Read the diff in pr_diff.txt. If there are critical security bugs, return 'STATUS: FAILED' followed by the reasons. Otherwise, return 'STATUS: PASSED'. Do not make any edits." > review_output.txt
+          
+          # Check for failure in Claude's output
+          if grep -q "STATUS: FAILED" review_output.txt; then
+            echo "Claude Code found critical issues:"
+            cat review_output.txt
+            exit 1
+          else
+            echo "Claude Code approved the PR."
+          fi

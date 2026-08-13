@@ -36,25 +36,25 @@ When creating new canonical examples in this directory, the following rules MUST
 - [x] **2.5** Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively
 
 ## Domain 3: Claude Code Configuration & Workflows
-- [ ] **3.1** Configure CLAUDE.md files with appropriate hierarchy, scoping, and modular organization
-- [ ] **3.2** Create and configure custom slash commands and skills
-- [ ] **3.3** Apply path-specific rules for conditional convention loading
-- [ ] **3.4** Determine when to use plan mode vs direct execution
-- [ ] **3.5** Apply iterative refinement techniques for progressive improvement
-- [ ] **3.6** Integrate Claude Code into CI/CD pipelines
+- [x] **3.1** Configure CLAUDE.md files with appropriate hierarchy, scoping, and modular organization
+- [x] **3.2** Create and configure custom slash commands and skills
+- [x] **3.3** Apply path-specific rules for conditional convention loading
+- [x] **3.4** Determine when to use plan mode vs direct execution
+- [x] **3.5** Apply iterative refinement techniques for progressive improvement
+- [x] **3.6** Integrate Claude Code into CI/CD pipelines
 
 ## Domain 4: Prompt Engineering & Structured Output
-- [ ] **4.1** Design prompts with explicit criteria to improve precision and reduce false positives
-- [ ] **4.2** Apply few-shot prompting to improve output consistency and quality
+- [x] **4.1** Design prompts with explicit criteria to improve precision and reduce false positives
+- [x] **4.2** Apply few-shot prompting to improve output consistency and quality
 - [x] **4.3** Enforce structured output using tool use and JSON schemas
-- [ ] **4.4** Implement validation, retry, and feedback loops for extraction quality
-- [ ] **4.5** Design efficient batch processing strategies
-- [ ] **4.6** Design multi-instance and multi-pass review architectures
+- [x] **4.4** Implement validation, retry, and feedback loops for extraction quality
+- [x] **4.5** Design efficient batch processing strategies
+- [x] **4.6** Design multi-instance and multi-pass review architectures
 
 ## Domain 5: Context Management & Reliability
-- [ ] **5.1** Manage conversation context to preserve critical information across long interactions
-- [ ] **5.2** Design effective escalation and ambiguity resolution patterns
-- [ ] **5.3** Implement error propagation strategies across multi-agent systems
-- [ ] **5.4** Manage context effectively in large codebase exploration
-- [ ] **5.5** Design human review workflows and confidence calibration
-- [ ] **5.6** Preserve information provenance and handle uncertainty in multi-source synthesis
+- [x] **5.1** Manage conversation context to preserve critical information across long interactions
+- [x] **5.2** Design effective escalation and ambiguity resolution patterns
+- [x] **5.3** Implement error propagation strategies across multi-agent systems
+- [x] **5.4** Manage context effectively in large codebase exploration
+- [x] **5.5** Design human review workflows and confidence calibration
+- [x] **5.6** Preserve information provenance and handle uncertainty in multi-source synthesis

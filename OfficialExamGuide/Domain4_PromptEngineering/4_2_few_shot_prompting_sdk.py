@@ -1,0 +1,87 @@
+"""
+Task Statement 4.2: Apply few-shot prompting to improve output consistency and quality
+(SDK VERSION)
+
+Knowledge of:
+- How to structure few-shot examples using XML tags (`<examples><example>...`).
+- When to use few-shot examples (when the output format or tonal voice is very specific 
+  and hard to describe with rules alone).
+
+Skills in:
+- Writing a prompt with multiple diverse examples.
+"""
+
+import os
+import asyncio
+from dotenv import load_dotenv
+
+from claude_agent_sdk import ClaudeAgentOptions, query, ResultMessage
+
+# Constants
+DEFAULT_MODEL = "claude-haiku-4-5"
+
+# Load environment variables
+load_dotenv()
+if "ANTHROPIC_API_KEY" not in os.environ:
+    os.environ["ANTHROPIC_API_KEY"] = "dummy_key"
+
+
+# ==============================================================================
+# EXAM SKILL: Few-Shot Prompting
+# ==============================================================================
+
+# Notice how the examples use XML tags to clearly separate the input from the expected output.
+# Notice how the examples demonstrate edge cases (e.g., missing data).
+SYSTEM_PROMPT = """
+You are a data normalizer. Convert the user's messy text into a standard CSV format:
+Name, Age, Location
+
+<examples>
+<example>
+<user_input>
+My name is John. I am 35 years old and I live in Seattle, WA.
+</user_input>
+<ideal_output>
+John, 35, Seattle
+</ideal_output>
+</example>
+
+<example>
+<user_input>
+I'm Sarah. I live in London.
+</user_input>
+<ideal_output>
+Sarah, N/A, London
+</ideal_output>
+</example>
+</examples>
+
+Follow the exact format from the examples. Do not write any other text.
+"""
+
+async def run_few_shot_sdk(messy_text: str):
+    print(f"\n--- Starting SDK Few-Shot Workflow ---")
+    
+    options = ClaudeAgentOptions(
+        model=DEFAULT_MODEL,
+        system_prompt=SYSTEM_PROMPT
+    )
+
+    try:
+        final_output = None
+        async for msg in query(prompt=messy_text, options=options):
+            if isinstance(msg, ResultMessage):
+                final_output = msg.result
+        return final_output
+    except Exception as e:
+        return "[Mock Response expected if dummy key]"
+
+if __name__ == "__main__":
+    try:
+        req = "Hi! I am David. I'm 22 and based out of New York City."
+        print(f"User Input: {req}")
+        res = asyncio.run(run_few_shot_sdk(req))
+        print(f"[Agent Response -> should match CSV format]:\n{res}")
+        
+    except Exception as e:
+        print(f"\n[SYSTEM] Run complete or failed (expected if dummy key): {e}")
